@@ -6,8 +6,7 @@ import 'package:test/test.dart';
 // make op with given body. other fields fixed: test only cares about body.
 Op _op(OpBody body) => Op(
       id: 'op-1',
-      groupId: 'g-1',
-      listId: 'l-1',
+      spaceId: 's-1',
       itemId: 'i-1',
       userId: 'u-asha',
       clientTime: DateTime.utc(2026, 10, 10, 18, 2),
@@ -25,8 +24,9 @@ void _roundTrip(OpBody body) {
 
 void main() {
   // every op type survives the wire.
-  test('list.create', () => _roundTrip(ListCreate(name: 'Weekly', date: DateTime(2026, 10, 12))));
-  test('list.update no date', () => _roundTrip(const ListUpdate(name: 'Weekly', date: null)));
+  test('space.create', () => _roundTrip(const SpaceCreate(name: 'Home', private: false)));
+  test('space.create private', () => _roundTrip(const SpaceCreate(name: 'private', private: true)));
+  test('space.rename', () => _roundTrip(const SpaceRename(name: 'Flat')));
   test('item.add rice 1.5 kg', () => _roundTrip(const ItemAdd(name: 'அரிசி', quantity: 1.5, unit: 'kg', note: null, requestedBy: 'u-mum')));
   test('item.add milk, no qty no unit', () => _roundTrip(const ItemAdd(name: 'milk', quantity: null, unit: null, note: null, requestedBy: 'u-asha')));
   test('item.update', () => _roundTrip(const ItemUpdate(name: 'soap', quantity: 1, unit: null, note: 'lavender')));

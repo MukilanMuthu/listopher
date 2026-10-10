@@ -1,0 +1,21 @@
+{
+  "@@locale": "en",
+  "appName": "Listopher",
+  "yourName": "Your name",
+  "save": "Save",
+  "cancel": "Cancel",
+  "create": "Create",
+  "add": "Add",
+  "itemsTab": "Items",
+  "spacesTab": "Spaces",
+  "privateSpace": "Private",
+  "noItemsYet": "No items yet",
+  "newSpace": "New space",
+  "spaceName": "Space name",
+  "pickSpace": "Pick a space",
+  "editItem": "Edit item",
+  "itemName": "Item name",
+  "quantity": "Quantity",
+  "unit": "Unit",
+  "invalidQuantity": "Not a number"
+}

@@ -10,7 +10,7 @@ ItemRow? applyItemOp(ItemRow? current, Op op) {
   if (body is ItemAdd) {
     return ItemRow(
       id: op.itemId!,
-      listId: op.listId,
+      spaceId: op.spaceId,
       name: body.name,
       quantity: body.quantity,
       unit: body.unit,
@@ -46,7 +46,7 @@ ItemRow? applyItemOp(ItemRow? current, Op op) {
       ),
     // soft delete: row stays
     ItemDelete() => current.copyWith(deleted: true),
-    // list ops do not touch items
+    // space ops do not touch items
     _ => current,
   };
 }

@@ -1,18 +1,14 @@
-import 'day_from_json.dart';
 import 'decimal_from_json.dart';
 import 'op.dart';
 
 /// (type, payload) → OpBody. reverse of bodyToJson.
 /// unknown type → FormatException. old app talking to newer server fails loud, not silent.
 OpBody bodyFromJson(String type, Map<String, Object?> p) => switch (type) {
-      'list.create' => ListCreate(
+      'space.create' => SpaceCreate(
           name: p['name'] as String,
-          date: dayFromJson(p['date']),
+          private: p['private'] as bool,
         ),
-      'list.update' => ListUpdate(
-          name: p['name'] as String,
-          date: dayFromJson(p['date']),
-        ),
+      'space.rename' => SpaceRename(name: p['name'] as String),
       'item.add' => ItemAdd(
           name: p['name'] as String,
           quantity: decimalFromJson(p['quantity']),

@@ -329,11 +329,11 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
   }
 }
 
-class $ListsTable extends Lists with TableInfo<$ListsTable, ListRow> {
+class $SpacesTable extends Spaces with TableInfo<$SpacesTable, SpaceRow> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $ListsTable(this.attachedDatabase, [this._alias]);
+  $SpacesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
@@ -342,17 +342,6 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListRow> {
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
-  );
-  static const VerificationMeta _groupIdMeta = const VerificationMeta(
-    'groupId',
-  );
-  @override
-  late final GeneratedColumn<String> groupId = GeneratedColumn<String>(
-    'group_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
@@ -363,13 +352,29 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListRow> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  static const VerificationMeta _privateMeta = const VerificationMeta(
+    'private',
+  );
   @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
-    'date',
+  late final GeneratedColumn<bool> private = GeneratedColumn<bool>(
+    'private',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("private" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _serverUrlMeta = const VerificationMeta(
+    'serverUrl',
+  );
+  @override
+  late final GeneratedColumn<String> serverUrl = GeneratedColumn<String>(
+    'server_url',
     aliasedName,
     true,
-    type: DriftSqlType.dateTime,
+    type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
   static const VerificationMeta _createdByMeta = const VerificationMeta(
@@ -397,9 +402,9 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListRow> {
   @override
   List<GeneratedColumn> get $columns => [
     id,
-    groupId,
     name,
-    date,
+    private,
+    serverUrl,
     createdBy,
     createdAt,
   ];
@@ -407,10 +412,10 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListRow> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'lists';
+  static const String $name = 'spaces';
   @override
   VerificationContext validateIntegrity(
-    Insertable<ListRow> instance, {
+    Insertable<SpaceRow> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -420,12 +425,6 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListRow> {
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('group_id')) {
-      context.handle(
-        _groupIdMeta,
-        groupId.isAcceptableOrUnknown(data['group_id']!, _groupIdMeta),
-      );
-    }
     if (data.containsKey('name')) {
       context.handle(
         _nameMeta,
@@ -434,10 +433,18 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListRow> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('date')) {
+    if (data.containsKey('private')) {
       context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+        _privateMeta,
+        private.isAcceptableOrUnknown(data['private']!, _privateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_privateMeta);
+    }
+    if (data.containsKey('server_url')) {
+      context.handle(
+        _serverUrlMeta,
+        serverUrl.isAcceptableOrUnknown(data['server_url']!, _serverUrlMeta),
       );
     }
     if (data.containsKey('created_by')) {
@@ -462,24 +469,24 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListRow> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  ListRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+  SpaceRow map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ListRow(
+    return SpaceRow(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
-      groupId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}group_id'],
-      ),
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
-      date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}date'],
+      private: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}private'],
+      )!,
+      serverUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}server_url'],
       ),
       createdBy: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -493,23 +500,23 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListRow> {
   }
 
   @override
-  $ListsTable createAlias(String alias) {
-    return $ListsTable(attachedDatabase, alias);
+  $SpacesTable createAlias(String alias) {
+    return $SpacesTable(attachedDatabase, alias);
   }
 }
 
-class ListRow extends DataClass implements Insertable<ListRow> {
+class SpaceRow extends DataClass implements Insertable<SpaceRow> {
   final String id;
-  final String? groupId;
   final String name;
-  final DateTime? date;
+  final bool private;
+  final String? serverUrl;
   final String createdBy;
   final DateTime createdAt;
-  const ListRow({
+  const SpaceRow({
     required this.id,
-    this.groupId,
     required this.name,
-    this.date,
+    required this.private,
+    this.serverUrl,
     required this.createdBy,
     required this.createdAt,
   });
@@ -517,41 +524,39 @@ class ListRow extends DataClass implements Insertable<ListRow> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    if (!nullToAbsent || groupId != null) {
-      map['group_id'] = Variable<String>(groupId);
-    }
     map['name'] = Variable<String>(name);
-    if (!nullToAbsent || date != null) {
-      map['date'] = Variable<DateTime>(date);
+    map['private'] = Variable<bool>(private);
+    if (!nullToAbsent || serverUrl != null) {
+      map['server_url'] = Variable<String>(serverUrl);
     }
     map['created_by'] = Variable<String>(createdBy);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
 
-  ListsCompanion toCompanion(bool nullToAbsent) {
-    return ListsCompanion(
+  SpacesCompanion toCompanion(bool nullToAbsent) {
+    return SpacesCompanion(
       id: Value(id),
-      groupId: groupId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(groupId),
       name: Value(name),
-      date: date == null && nullToAbsent ? const Value.absent() : Value(date),
+      private: Value(private),
+      serverUrl: serverUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverUrl),
       createdBy: Value(createdBy),
       createdAt: Value(createdAt),
     );
   }
 
-  factory ListRow.fromJson(
+  factory SpaceRow.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return ListRow(
+    return SpaceRow(
       id: serializer.fromJson<String>(json['id']),
-      groupId: serializer.fromJson<String?>(json['groupId']),
       name: serializer.fromJson<String>(json['name']),
-      date: serializer.fromJson<DateTime?>(json['date']),
+      private: serializer.fromJson<bool>(json['private']),
+      serverUrl: serializer.fromJson<String?>(json['serverUrl']),
       createdBy: serializer.fromJson<String>(json['createdBy']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -561,35 +566,35 @@ class ListRow extends DataClass implements Insertable<ListRow> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'groupId': serializer.toJson<String?>(groupId),
       'name': serializer.toJson<String>(name),
-      'date': serializer.toJson<DateTime?>(date),
+      'private': serializer.toJson<bool>(private),
+      'serverUrl': serializer.toJson<String?>(serverUrl),
       'createdBy': serializer.toJson<String>(createdBy),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
-  ListRow copyWith({
+  SpaceRow copyWith({
     String? id,
-    Value<String?> groupId = const Value.absent(),
     String? name,
-    Value<DateTime?> date = const Value.absent(),
+    bool? private,
+    Value<String?> serverUrl = const Value.absent(),
     String? createdBy,
     DateTime? createdAt,
-  }) => ListRow(
+  }) => SpaceRow(
     id: id ?? this.id,
-    groupId: groupId.present ? groupId.value : this.groupId,
     name: name ?? this.name,
-    date: date.present ? date.value : this.date,
+    private: private ?? this.private,
+    serverUrl: serverUrl.present ? serverUrl.value : this.serverUrl,
     createdBy: createdBy ?? this.createdBy,
     createdAt: createdAt ?? this.createdAt,
   );
-  ListRow copyWithCompanion(ListsCompanion data) {
-    return ListRow(
+  SpaceRow copyWithCompanion(SpacesCompanion data) {
+    return SpaceRow(
       id: data.id.present ? data.id.value : this.id,
-      groupId: data.groupId.present ? data.groupId.value : this.groupId,
       name: data.name.present ? data.name.value : this.name,
-      date: data.date.present ? data.date.value : this.date,
+      private: data.private.present ? data.private.value : this.private,
+      serverUrl: data.serverUrl.present ? data.serverUrl.value : this.serverUrl,
       createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -597,11 +602,11 @@ class ListRow extends DataClass implements Insertable<ListRow> {
 
   @override
   String toString() {
-    return (StringBuffer('ListRow(')
+    return (StringBuffer('SpaceRow(')
           ..write('id: $id, ')
-          ..write('groupId: $groupId, ')
           ..write('name: $name, ')
-          ..write('date: $date, ')
+          ..write('private: $private, ')
+          ..write('serverUrl: $serverUrl, ')
           ..write('createdBy: $createdBy, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -610,82 +615,83 @@ class ListRow extends DataClass implements Insertable<ListRow> {
 
   @override
   int get hashCode =>
-      Object.hash(id, groupId, name, date, createdBy, createdAt);
+      Object.hash(id, name, private, serverUrl, createdBy, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ListRow &&
+      (other is SpaceRow &&
           other.id == this.id &&
-          other.groupId == this.groupId &&
           other.name == this.name &&
-          other.date == this.date &&
+          other.private == this.private &&
+          other.serverUrl == this.serverUrl &&
           other.createdBy == this.createdBy &&
           other.createdAt == this.createdAt);
 }
 
-class ListsCompanion extends UpdateCompanion<ListRow> {
+class SpacesCompanion extends UpdateCompanion<SpaceRow> {
   final Value<String> id;
-  final Value<String?> groupId;
   final Value<String> name;
-  final Value<DateTime?> date;
+  final Value<bool> private;
+  final Value<String?> serverUrl;
   final Value<String> createdBy;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
-  const ListsCompanion({
+  const SpacesCompanion({
     this.id = const Value.absent(),
-    this.groupId = const Value.absent(),
     this.name = const Value.absent(),
-    this.date = const Value.absent(),
+    this.private = const Value.absent(),
+    this.serverUrl = const Value.absent(),
     this.createdBy = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  ListsCompanion.insert({
+  SpacesCompanion.insert({
     required String id,
-    this.groupId = const Value.absent(),
     required String name,
-    this.date = const Value.absent(),
+    required bool private,
+    this.serverUrl = const Value.absent(),
     required String createdBy,
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
+       private = Value(private),
        createdBy = Value(createdBy),
        createdAt = Value(createdAt);
-  static Insertable<ListRow> custom({
+  static Insertable<SpaceRow> custom({
     Expression<String>? id,
-    Expression<String>? groupId,
     Expression<String>? name,
-    Expression<DateTime>? date,
+    Expression<bool>? private,
+    Expression<String>? serverUrl,
     Expression<String>? createdBy,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (groupId != null) 'group_id': groupId,
       if (name != null) 'name': name,
-      if (date != null) 'date': date,
+      if (private != null) 'private': private,
+      if (serverUrl != null) 'server_url': serverUrl,
       if (createdBy != null) 'created_by': createdBy,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
-  ListsCompanion copyWith({
+  SpacesCompanion copyWith({
     Value<String>? id,
-    Value<String?>? groupId,
     Value<String>? name,
-    Value<DateTime?>? date,
+    Value<bool>? private,
+    Value<String?>? serverUrl,
     Value<String>? createdBy,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
-    return ListsCompanion(
+    return SpacesCompanion(
       id: id ?? this.id,
-      groupId: groupId ?? this.groupId,
       name: name ?? this.name,
-      date: date ?? this.date,
+      private: private ?? this.private,
+      serverUrl: serverUrl ?? this.serverUrl,
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
@@ -698,14 +704,14 @@ class ListsCompanion extends UpdateCompanion<ListRow> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (groupId.present) {
-      map['group_id'] = Variable<String>(groupId.value);
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+    if (private.present) {
+      map['private'] = Variable<bool>(private.value);
+    }
+    if (serverUrl.present) {
+      map['server_url'] = Variable<String>(serverUrl.value);
     }
     if (createdBy.present) {
       map['created_by'] = Variable<String>(createdBy.value);
@@ -721,11 +727,11 @@ class ListsCompanion extends UpdateCompanion<ListRow> {
 
   @override
   String toString() {
-    return (StringBuffer('ListsCompanion(')
+    return (StringBuffer('SpacesCompanion(')
           ..write('id: $id, ')
-          ..write('groupId: $groupId, ')
           ..write('name: $name, ')
-          ..write('date: $date, ')
+          ..write('private: $private, ')
+          ..write('serverUrl: $serverUrl, ')
           ..write('createdBy: $createdBy, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
@@ -748,10 +754,12 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, ItemRow> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _listIdMeta = const VerificationMeta('listId');
+  static const VerificationMeta _spaceIdMeta = const VerificationMeta(
+    'spaceId',
+  );
   @override
-  late final GeneratedColumn<String> listId = GeneratedColumn<String>(
-    'list_id',
+  late final GeneratedColumn<String> spaceId = GeneratedColumn<String>(
+    'space_id',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -883,7 +891,7 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, ItemRow> {
   @override
   List<GeneratedColumn> get $columns => [
     id,
-    listId,
+    spaceId,
     name,
     quantity,
     unit,
@@ -913,13 +921,13 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, ItemRow> {
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('list_id')) {
+    if (data.containsKey('space_id')) {
       context.handle(
-        _listIdMeta,
-        listId.isAcceptableOrUnknown(data['list_id']!, _listIdMeta),
+        _spaceIdMeta,
+        spaceId.isAcceptableOrUnknown(data['space_id']!, _spaceIdMeta),
       );
     } else if (isInserting) {
-      context.missing(_listIdMeta);
+      context.missing(_spaceIdMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -1015,9 +1023,9 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, ItemRow> {
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
-      listId: attachedDatabase.typeMapping.read(
+      spaceId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}list_id'],
+        data['${effectivePrefix}space_id'],
       )!,
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -1074,7 +1082,7 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, ItemRow> {
 
 class ItemRow extends DataClass implements Insertable<ItemRow> {
   final String id;
-  final String listId;
+  final String spaceId;
   final String name;
   final double? quantity;
   final String? unit;
@@ -1088,7 +1096,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
   final bool deleted;
   const ItemRow({
     required this.id,
-    required this.listId,
+    required this.spaceId,
     required this.name,
     this.quantity,
     this.unit,
@@ -1105,7 +1113,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['list_id'] = Variable<String>(listId);
+    map['space_id'] = Variable<String>(spaceId);
     map['name'] = Variable<String>(name);
     if (!nullToAbsent || quantity != null) {
       map['quantity'] = Variable<double>(quantity);
@@ -1135,7 +1143,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
   ItemsCompanion toCompanion(bool nullToAbsent) {
     return ItemsCompanion(
       id: Value(id),
-      listId: Value(listId),
+      spaceId: Value(spaceId),
       name: Value(name),
       quantity: quantity == null && nullToAbsent
           ? const Value.absent()
@@ -1165,7 +1173,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ItemRow(
       id: serializer.fromJson<String>(json['id']),
-      listId: serializer.fromJson<String>(json['listId']),
+      spaceId: serializer.fromJson<String>(json['spaceId']),
       name: serializer.fromJson<String>(json['name']),
       quantity: serializer.fromJson<double?>(json['quantity']),
       unit: serializer.fromJson<String?>(json['unit']),
@@ -1184,7 +1192,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'listId': serializer.toJson<String>(listId),
+      'spaceId': serializer.toJson<String>(spaceId),
       'name': serializer.toJson<String>(name),
       'quantity': serializer.toJson<double?>(quantity),
       'unit': serializer.toJson<String?>(unit),
@@ -1201,7 +1209,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
 
   ItemRow copyWith({
     String? id,
-    String? listId,
+    String? spaceId,
     String? name,
     Value<double?> quantity = const Value.absent(),
     Value<String?> unit = const Value.absent(),
@@ -1215,7 +1223,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
     bool? deleted,
   }) => ItemRow(
     id: id ?? this.id,
-    listId: listId ?? this.listId,
+    spaceId: spaceId ?? this.spaceId,
     name: name ?? this.name,
     quantity: quantity.present ? quantity.value : this.quantity,
     unit: unit.present ? unit.value : this.unit,
@@ -1231,7 +1239,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
   ItemRow copyWithCompanion(ItemsCompanion data) {
     return ItemRow(
       id: data.id.present ? data.id.value : this.id,
-      listId: data.listId.present ? data.listId.value : this.listId,
+      spaceId: data.spaceId.present ? data.spaceId.value : this.spaceId,
       name: data.name.present ? data.name.value : this.name,
       quantity: data.quantity.present ? data.quantity.value : this.quantity,
       unit: data.unit.present ? data.unit.value : this.unit,
@@ -1256,7 +1264,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
   String toString() {
     return (StringBuffer('ItemRow(')
           ..write('id: $id, ')
-          ..write('listId: $listId, ')
+          ..write('spaceId: $spaceId, ')
           ..write('name: $name, ')
           ..write('quantity: $quantity, ')
           ..write('unit: $unit, ')
@@ -1275,7 +1283,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
   @override
   int get hashCode => Object.hash(
     id,
-    listId,
+    spaceId,
     name,
     quantity,
     unit,
@@ -1293,7 +1301,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
       identical(this, other) ||
       (other is ItemRow &&
           other.id == this.id &&
-          other.listId == this.listId &&
+          other.spaceId == this.spaceId &&
           other.name == this.name &&
           other.quantity == this.quantity &&
           other.unit == this.unit &&
@@ -1309,7 +1317,7 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
 
 class ItemsCompanion extends UpdateCompanion<ItemRow> {
   final Value<String> id;
-  final Value<String> listId;
+  final Value<String> spaceId;
   final Value<String> name;
   final Value<double?> quantity;
   final Value<String?> unit;
@@ -1324,7 +1332,7 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
   final Value<int> rowid;
   const ItemsCompanion({
     this.id = const Value.absent(),
-    this.listId = const Value.absent(),
+    this.spaceId = const Value.absent(),
     this.name = const Value.absent(),
     this.quantity = const Value.absent(),
     this.unit = const Value.absent(),
@@ -1340,7 +1348,7 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
   });
   ItemsCompanion.insert({
     required String id,
-    required String listId,
+    required String spaceId,
     required String name,
     this.quantity = const Value.absent(),
     this.unit = const Value.absent(),
@@ -1354,13 +1362,13 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
     this.deleted = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
-       listId = Value(listId),
+       spaceId = Value(spaceId),
        name = Value(name),
        requestedBy = Value(requestedBy),
        requestedAt = Value(requestedAt);
   static Insertable<ItemRow> custom({
     Expression<String>? id,
-    Expression<String>? listId,
+    Expression<String>? spaceId,
     Expression<String>? name,
     Expression<double>? quantity,
     Expression<String>? unit,
@@ -1376,7 +1384,7 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (listId != null) 'list_id': listId,
+      if (spaceId != null) 'space_id': spaceId,
       if (name != null) 'name': name,
       if (quantity != null) 'quantity': quantity,
       if (unit != null) 'unit': unit,
@@ -1394,7 +1402,7 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
 
   ItemsCompanion copyWith({
     Value<String>? id,
-    Value<String>? listId,
+    Value<String>? spaceId,
     Value<String>? name,
     Value<double?>? quantity,
     Value<String?>? unit,
@@ -1410,7 +1418,7 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
   }) {
     return ItemsCompanion(
       id: id ?? this.id,
-      listId: listId ?? this.listId,
+      spaceId: spaceId ?? this.spaceId,
       name: name ?? this.name,
       quantity: quantity ?? this.quantity,
       unit: unit ?? this.unit,
@@ -1432,8 +1440,8 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (listId.present) {
-      map['list_id'] = Variable<String>(listId.value);
+    if (spaceId.present) {
+      map['space_id'] = Variable<String>(spaceId.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -1478,7 +1486,7 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
   String toString() {
     return (StringBuffer('ItemsCompanion(')
           ..write('id: $id, ')
-          ..write('listId: $listId, ')
+          ..write('spaceId: $spaceId, ')
           ..write('name: $name, ')
           ..write('quantity: $quantity, ')
           ..write('unit: $unit, ')
@@ -1524,10 +1532,12 @@ class $OpsTable extends Ops with TableInfo<$OpsTable, OpRow> {
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
-  static const VerificationMeta _listIdMeta = const VerificationMeta('listId');
+  static const VerificationMeta _spaceIdMeta = const VerificationMeta(
+    'spaceId',
+  );
   @override
-  late final GeneratedColumn<String> listId = GeneratedColumn<String>(
-    'list_id',
+  late final GeneratedColumn<String> spaceId = GeneratedColumn<String>(
+    'space_id',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -1554,7 +1564,7 @@ class $OpsTable extends Ops with TableInfo<$OpsTable, OpRow> {
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [seq, id, listId, serverSeq, json];
+  List<GeneratedColumn> get $columns => [seq, id, spaceId, serverSeq, json];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1578,13 +1588,13 @@ class $OpsTable extends Ops with TableInfo<$OpsTable, OpRow> {
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('list_id')) {
+    if (data.containsKey('space_id')) {
       context.handle(
-        _listIdMeta,
-        listId.isAcceptableOrUnknown(data['list_id']!, _listIdMeta),
+        _spaceIdMeta,
+        spaceId.isAcceptableOrUnknown(data['space_id']!, _spaceIdMeta),
       );
     } else if (isInserting) {
-      context.missing(_listIdMeta);
+      context.missing(_spaceIdMeta);
     }
     if (data.containsKey('server_seq')) {
       context.handle(
@@ -1617,9 +1627,9 @@ class $OpsTable extends Ops with TableInfo<$OpsTable, OpRow> {
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
-      listId: attachedDatabase.typeMapping.read(
+      spaceId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}list_id'],
+        data['${effectivePrefix}space_id'],
       )!,
       serverSeq: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -1641,13 +1651,13 @@ class $OpsTable extends Ops with TableInfo<$OpsTable, OpRow> {
 class OpRow extends DataClass implements Insertable<OpRow> {
   final int seq;
   final String id;
-  final String listId;
+  final String spaceId;
   final int? serverSeq;
   final String json;
   const OpRow({
     required this.seq,
     required this.id,
-    required this.listId,
+    required this.spaceId,
     this.serverSeq,
     required this.json,
   });
@@ -1656,7 +1666,7 @@ class OpRow extends DataClass implements Insertable<OpRow> {
     final map = <String, Expression>{};
     map['seq'] = Variable<int>(seq);
     map['id'] = Variable<String>(id);
-    map['list_id'] = Variable<String>(listId);
+    map['space_id'] = Variable<String>(spaceId);
     if (!nullToAbsent || serverSeq != null) {
       map['server_seq'] = Variable<int>(serverSeq);
     }
@@ -1668,7 +1678,7 @@ class OpRow extends DataClass implements Insertable<OpRow> {
     return OpsCompanion(
       seq: Value(seq),
       id: Value(id),
-      listId: Value(listId),
+      spaceId: Value(spaceId),
       serverSeq: serverSeq == null && nullToAbsent
           ? const Value.absent()
           : Value(serverSeq),
@@ -1684,7 +1694,7 @@ class OpRow extends DataClass implements Insertable<OpRow> {
     return OpRow(
       seq: serializer.fromJson<int>(json['seq']),
       id: serializer.fromJson<String>(json['id']),
-      listId: serializer.fromJson<String>(json['listId']),
+      spaceId: serializer.fromJson<String>(json['spaceId']),
       serverSeq: serializer.fromJson<int?>(json['serverSeq']),
       json: serializer.fromJson<String>(json['json']),
     );
@@ -1695,7 +1705,7 @@ class OpRow extends DataClass implements Insertable<OpRow> {
     return <String, dynamic>{
       'seq': serializer.toJson<int>(seq),
       'id': serializer.toJson<String>(id),
-      'listId': serializer.toJson<String>(listId),
+      'spaceId': serializer.toJson<String>(spaceId),
       'serverSeq': serializer.toJson<int?>(serverSeq),
       'json': serializer.toJson<String>(json),
     };
@@ -1704,13 +1714,13 @@ class OpRow extends DataClass implements Insertable<OpRow> {
   OpRow copyWith({
     int? seq,
     String? id,
-    String? listId,
+    String? spaceId,
     Value<int?> serverSeq = const Value.absent(),
     String? json,
   }) => OpRow(
     seq: seq ?? this.seq,
     id: id ?? this.id,
-    listId: listId ?? this.listId,
+    spaceId: spaceId ?? this.spaceId,
     serverSeq: serverSeq.present ? serverSeq.value : this.serverSeq,
     json: json ?? this.json,
   );
@@ -1718,7 +1728,7 @@ class OpRow extends DataClass implements Insertable<OpRow> {
     return OpRow(
       seq: data.seq.present ? data.seq.value : this.seq,
       id: data.id.present ? data.id.value : this.id,
-      listId: data.listId.present ? data.listId.value : this.listId,
+      spaceId: data.spaceId.present ? data.spaceId.value : this.spaceId,
       serverSeq: data.serverSeq.present ? data.serverSeq.value : this.serverSeq,
       json: data.json.present ? data.json.value : this.json,
     );
@@ -1729,7 +1739,7 @@ class OpRow extends DataClass implements Insertable<OpRow> {
     return (StringBuffer('OpRow(')
           ..write('seq: $seq, ')
           ..write('id: $id, ')
-          ..write('listId: $listId, ')
+          ..write('spaceId: $spaceId, ')
           ..write('serverSeq: $serverSeq, ')
           ..write('json: $json')
           ..write(')'))
@@ -1737,14 +1747,14 @@ class OpRow extends DataClass implements Insertable<OpRow> {
   }
 
   @override
-  int get hashCode => Object.hash(seq, id, listId, serverSeq, json);
+  int get hashCode => Object.hash(seq, id, spaceId, serverSeq, json);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is OpRow &&
           other.seq == this.seq &&
           other.id == this.id &&
-          other.listId == this.listId &&
+          other.spaceId == this.spaceId &&
           other.serverSeq == this.serverSeq &&
           other.json == this.json);
 }
@@ -1752,36 +1762,36 @@ class OpRow extends DataClass implements Insertable<OpRow> {
 class OpsCompanion extends UpdateCompanion<OpRow> {
   final Value<int> seq;
   final Value<String> id;
-  final Value<String> listId;
+  final Value<String> spaceId;
   final Value<int?> serverSeq;
   final Value<String> json;
   const OpsCompanion({
     this.seq = const Value.absent(),
     this.id = const Value.absent(),
-    this.listId = const Value.absent(),
+    this.spaceId = const Value.absent(),
     this.serverSeq = const Value.absent(),
     this.json = const Value.absent(),
   });
   OpsCompanion.insert({
     this.seq = const Value.absent(),
     required String id,
-    required String listId,
+    required String spaceId,
     this.serverSeq = const Value.absent(),
     required String json,
   }) : id = Value(id),
-       listId = Value(listId),
+       spaceId = Value(spaceId),
        json = Value(json);
   static Insertable<OpRow> custom({
     Expression<int>? seq,
     Expression<String>? id,
-    Expression<String>? listId,
+    Expression<String>? spaceId,
     Expression<int>? serverSeq,
     Expression<String>? json,
   }) {
     return RawValuesInsertable({
       if (seq != null) 'seq': seq,
       if (id != null) 'id': id,
-      if (listId != null) 'list_id': listId,
+      if (spaceId != null) 'space_id': spaceId,
       if (serverSeq != null) 'server_seq': serverSeq,
       if (json != null) 'json': json,
     });
@@ -1790,14 +1800,14 @@ class OpsCompanion extends UpdateCompanion<OpRow> {
   OpsCompanion copyWith({
     Value<int>? seq,
     Value<String>? id,
-    Value<String>? listId,
+    Value<String>? spaceId,
     Value<int?>? serverSeq,
     Value<String>? json,
   }) {
     return OpsCompanion(
       seq: seq ?? this.seq,
       id: id ?? this.id,
-      listId: listId ?? this.listId,
+      spaceId: spaceId ?? this.spaceId,
       serverSeq: serverSeq ?? this.serverSeq,
       json: json ?? this.json,
     );
@@ -1812,8 +1822,8 @@ class OpsCompanion extends UpdateCompanion<OpRow> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (listId.present) {
-      map['list_id'] = Variable<String>(listId.value);
+    if (spaceId.present) {
+      map['space_id'] = Variable<String>(spaceId.value);
     }
     if (serverSeq.present) {
       map['server_seq'] = Variable<int>(serverSeq.value);
@@ -1829,7 +1839,7 @@ class OpsCompanion extends UpdateCompanion<OpRow> {
     return (StringBuffer('OpsCompanion(')
           ..write('seq: $seq, ')
           ..write('id: $id, ')
-          ..write('listId: $listId, ')
+          ..write('spaceId: $spaceId, ')
           ..write('serverSeq: $serverSeq, ')
           ..write('json: $json')
           ..write(')'))
@@ -1841,7 +1851,7 @@ abstract class _$AppDb extends GeneratedDatabase {
   _$AppDb(QueryExecutor e) : super(e);
   $AppDbManager get managers => $AppDbManager(this);
   late final $UsersTable users = $UsersTable(this);
-  late final $ListsTable lists = $ListsTable(this);
+  late final $SpacesTable spaces = $SpacesTable(this);
   late final $ItemsTable items = $ItemsTable(this);
   late final $OpsTable ops = $OpsTable(this);
   @override
@@ -1850,7 +1860,7 @@ abstract class _$AppDb extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     users,
-    lists,
+    spaces,
     items,
     ops,
   ];
@@ -2035,27 +2045,27 @@ typedef $$UsersTableProcessedTableManager =
       UserRow,
       PrefetchHooks Function()
     >;
-typedef $$ListsTableCreateCompanionBuilder = ListsCompanion Function({
+typedef $$SpacesTableCreateCompanionBuilder = SpacesCompanion Function({
   required String id,
-  Value<String?> groupId,
   required String name,
-  Value<DateTime?> date,
+  required bool private,
+  Value<String?> serverUrl,
   required String createdBy,
   required DateTime createdAt,
   Value<int> rowid,
 });
-typedef $$ListsTableUpdateCompanionBuilder = ListsCompanion Function({
+typedef $$SpacesTableUpdateCompanionBuilder = SpacesCompanion Function({
   Value<String> id,
-  Value<String?> groupId,
   Value<String> name,
-  Value<DateTime?> date,
+  Value<bool> private,
+  Value<String?> serverUrl,
   Value<String> createdBy,
   Value<DateTime> createdAt,
   Value<int> rowid,
 });
 
-class $$ListsTableFilterComposer extends Composer<_$AppDb, $ListsTable> {
-  $$ListsTableFilterComposer({
+class $$SpacesTableFilterComposer extends Composer<_$AppDb, $SpacesTable> {
+  $$SpacesTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -2067,18 +2077,18 @@ class $$ListsTableFilterComposer extends Composer<_$AppDb, $ListsTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get groupId => $composableBuilder(
-    column: $table.groupId,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get date => $composableBuilder(
-    column: $table.date,
+  ColumnFilters<bool> get private => $composableBuilder(
+    column: $table.private,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get serverUrl => $composableBuilder(
+    column: $table.serverUrl,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2093,8 +2103,8 @@ class $$ListsTableFilterComposer extends Composer<_$AppDb, $ListsTable> {
   );
 }
 
-class $$ListsTableOrderingComposer extends Composer<_$AppDb, $ListsTable> {
-  $$ListsTableOrderingComposer({
+class $$SpacesTableOrderingComposer extends Composer<_$AppDb, $SpacesTable> {
+  $$SpacesTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -2106,18 +2116,18 @@ class $$ListsTableOrderingComposer extends Composer<_$AppDb, $ListsTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get groupId => $composableBuilder(
-    column: $table.groupId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get date => $composableBuilder(
-    column: $table.date,
+  ColumnOrderings<bool> get private => $composableBuilder(
+    column: $table.private,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get serverUrl => $composableBuilder(
+    column: $table.serverUrl,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2132,8 +2142,8 @@ class $$ListsTableOrderingComposer extends Composer<_$AppDb, $ListsTable> {
   );
 }
 
-class $$ListsTableAnnotationComposer extends Composer<_$AppDb, $ListsTable> {
-  $$ListsTableAnnotationComposer({
+class $$SpacesTableAnnotationComposer extends Composer<_$AppDb, $SpacesTable> {
+  $$SpacesTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -2143,14 +2153,14 @@ class $$ListsTableAnnotationComposer extends Composer<_$AppDb, $ListsTable> {
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get groupId =>
-      $composableBuilder(column: $table.groupId, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => column);
+  GeneratedColumn<bool> get private =>
+      $composableBuilder(column: $table.private, builder: (column) => column);
+
+  GeneratedColumn<String> get serverUrl =>
+      $composableBuilder(column: $table.serverUrl, builder: (column) => column);
 
   GeneratedColumn<String> get createdBy =>
       $composableBuilder(column: $table.createdBy, builder: (column) => column);
@@ -2159,46 +2169,46 @@ class $$ListsTableAnnotationComposer extends Composer<_$AppDb, $ListsTable> {
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 }
 
-class $$ListsTableTableManager
+class $$SpacesTableTableManager
     extends
         RootTableManager<
           _$AppDb,
-          $ListsTable,
-          ListRow,
-          $$ListsTableFilterComposer,
-          $$ListsTableOrderingComposer,
-          $$ListsTableAnnotationComposer,
-          $$ListsTableCreateCompanionBuilder,
-          $$ListsTableUpdateCompanionBuilder,
-          (ListRow, BaseReferences<_$AppDb, $ListsTable, ListRow>),
-          ListRow,
+          $SpacesTable,
+          SpaceRow,
+          $$SpacesTableFilterComposer,
+          $$SpacesTableOrderingComposer,
+          $$SpacesTableAnnotationComposer,
+          $$SpacesTableCreateCompanionBuilder,
+          $$SpacesTableUpdateCompanionBuilder,
+          (SpaceRow, BaseReferences<_$AppDb, $SpacesTable, SpaceRow>),
+          SpaceRow,
           PrefetchHooks Function()
         > {
-  $$ListsTableTableManager(_$AppDb db, $ListsTable table)
+  $$SpacesTableTableManager(_$AppDb db, $SpacesTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$ListsTableFilterComposer($db: db, $table: table),
+              $$SpacesTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$ListsTableOrderingComposer($db: db, $table: table),
+              $$SpacesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$ListsTableAnnotationComposer($db: db, $table: table),
+              $$SpacesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<String?> groupId = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<DateTime?> date = const Value.absent(),
+                Value<bool> private = const Value.absent(),
+                Value<String?> serverUrl = const Value.absent(),
                 Value<String> createdBy = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
-              }) => ListsCompanion(
+              }) => SpacesCompanion(
                 id: id,
-                groupId: groupId,
                 name: name,
-                date: date,
+                private: private,
+                serverUrl: serverUrl,
                 createdBy: createdBy,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -2206,17 +2216,17 @@ class $$ListsTableTableManager
           createCompanionCallback:
               ({
                 required String id,
-                Value<String?> groupId = const Value.absent(),
                 required String name,
-                Value<DateTime?> date = const Value.absent(),
+                required bool private,
+                Value<String?> serverUrl = const Value.absent(),
                 required String createdBy,
                 required DateTime createdAt,
                 Value<int> rowid = const Value.absent(),
-              }) => ListsCompanion.insert(
+              }) => SpacesCompanion.insert(
                 id: id,
-                groupId: groupId,
                 name: name,
-                date: date,
+                private: private,
+                serverUrl: serverUrl,
                 createdBy: createdBy,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -2224,8 +2234,8 @@ class $$ListsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable<$ListsTable, ListRow>(table),
-                  BaseReferences<_$AppDb, $ListsTable, ListRow>(db, table, e),
+                  e.readTable<$SpacesTable, SpaceRow>(table),
+                  BaseReferences<_$AppDb, $SpacesTable, SpaceRow>(db, table, e),
                 ),
               )
               .toList(),
@@ -2234,23 +2244,23 @@ class $$ListsTableTableManager
       );
 }
 
-typedef $$ListsTableProcessedTableManager =
+typedef $$SpacesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDb,
-      $ListsTable,
-      ListRow,
-      $$ListsTableFilterComposer,
-      $$ListsTableOrderingComposer,
-      $$ListsTableAnnotationComposer,
-      $$ListsTableCreateCompanionBuilder,
-      $$ListsTableUpdateCompanionBuilder,
-      (ListRow, BaseReferences<_$AppDb, $ListsTable, ListRow>),
-      ListRow,
+      $SpacesTable,
+      SpaceRow,
+      $$SpacesTableFilterComposer,
+      $$SpacesTableOrderingComposer,
+      $$SpacesTableAnnotationComposer,
+      $$SpacesTableCreateCompanionBuilder,
+      $$SpacesTableUpdateCompanionBuilder,
+      (SpaceRow, BaseReferences<_$AppDb, $SpacesTable, SpaceRow>),
+      SpaceRow,
       PrefetchHooks Function()
     >;
 typedef $$ItemsTableCreateCompanionBuilder = ItemsCompanion Function({
   required String id,
-  required String listId,
+  required String spaceId,
   required String name,
   Value<double?> quantity,
   Value<String?> unit,
@@ -2266,7 +2276,7 @@ typedef $$ItemsTableCreateCompanionBuilder = ItemsCompanion Function({
 });
 typedef $$ItemsTableUpdateCompanionBuilder = ItemsCompanion Function({
   Value<String> id,
-  Value<String> listId,
+  Value<String> spaceId,
   Value<String> name,
   Value<double?> quantity,
   Value<String?> unit,
@@ -2294,8 +2304,8 @@ class $$ItemsTableFilterComposer extends Composer<_$AppDb, $ItemsTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get listId => $composableBuilder(
-    column: $table.listId,
+  ColumnFilters<String> get spaceId => $composableBuilder(
+    column: $table.spaceId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2368,8 +2378,8 @@ class $$ItemsTableOrderingComposer extends Composer<_$AppDb, $ItemsTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get listId => $composableBuilder(
-    column: $table.listId,
+  ColumnOrderings<String> get spaceId => $composableBuilder(
+    column: $table.spaceId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2440,8 +2450,8 @@ class $$ItemsTableAnnotationComposer extends Composer<_$AppDb, $ItemsTable> {
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get listId =>
-      $composableBuilder(column: $table.listId, builder: (column) => column);
+  GeneratedColumn<String> get spaceId =>
+      $composableBuilder(column: $table.spaceId, builder: (column) => column);
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
@@ -2512,7 +2522,7 @@ class $$ItemsTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<String> listId = const Value.absent(),
+                Value<String> spaceId = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<double?> quantity = const Value.absent(),
                 Value<String?> unit = const Value.absent(),
@@ -2527,7 +2537,7 @@ class $$ItemsTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => ItemsCompanion(
                 id: id,
-                listId: listId,
+                spaceId: spaceId,
                 name: name,
                 quantity: quantity,
                 unit: unit,
@@ -2544,7 +2554,7 @@ class $$ItemsTableTableManager
           createCompanionCallback:
               ({
                 required String id,
-                required String listId,
+                required String spaceId,
                 required String name,
                 Value<double?> quantity = const Value.absent(),
                 Value<String?> unit = const Value.absent(),
@@ -2559,7 +2569,7 @@ class $$ItemsTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => ItemsCompanion.insert(
                 id: id,
-                listId: listId,
+                spaceId: spaceId,
                 name: name,
                 quantity: quantity,
                 unit: unit,
@@ -2603,14 +2613,14 @@ typedef $$ItemsTableProcessedTableManager =
 typedef $$OpsTableCreateCompanionBuilder = OpsCompanion Function({
   Value<int> seq,
   required String id,
-  required String listId,
+  required String spaceId,
   Value<int?> serverSeq,
   required String json,
 });
 typedef $$OpsTableUpdateCompanionBuilder = OpsCompanion Function({
   Value<int> seq,
   Value<String> id,
-  Value<String> listId,
+  Value<String> spaceId,
   Value<int?> serverSeq,
   Value<String> json,
 });
@@ -2633,8 +2643,8 @@ class $$OpsTableFilterComposer extends Composer<_$AppDb, $OpsTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get listId => $composableBuilder(
-    column: $table.listId,
+  ColumnFilters<String> get spaceId => $composableBuilder(
+    column: $table.spaceId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2667,8 +2677,8 @@ class $$OpsTableOrderingComposer extends Composer<_$AppDb, $OpsTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get listId => $composableBuilder(
-    column: $table.listId,
+  ColumnOrderings<String> get spaceId => $composableBuilder(
+    column: $table.spaceId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2697,8 +2707,8 @@ class $$OpsTableAnnotationComposer extends Composer<_$AppDb, $OpsTable> {
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get listId =>
-      $composableBuilder(column: $table.listId, builder: (column) => column);
+  GeneratedColumn<String> get spaceId =>
+      $composableBuilder(column: $table.spaceId, builder: (column) => column);
 
   GeneratedColumn<int> get serverSeq =>
       $composableBuilder(column: $table.serverSeq, builder: (column) => column);
@@ -2737,13 +2747,13 @@ class $$OpsTableTableManager
               ({
                 Value<int> seq = const Value.absent(),
                 Value<String> id = const Value.absent(),
-                Value<String> listId = const Value.absent(),
+                Value<String> spaceId = const Value.absent(),
                 Value<int?> serverSeq = const Value.absent(),
                 Value<String> json = const Value.absent(),
               }) => OpsCompanion(
                 seq: seq,
                 id: id,
-                listId: listId,
+                spaceId: spaceId,
                 serverSeq: serverSeq,
                 json: json,
               ),
@@ -2751,13 +2761,13 @@ class $$OpsTableTableManager
               ({
                 Value<int> seq = const Value.absent(),
                 required String id,
-                required String listId,
+                required String spaceId,
                 Value<int?> serverSeq = const Value.absent(),
                 required String json,
               }) => OpsCompanion.insert(
                 seq: seq,
                 id: id,
-                listId: listId,
+                spaceId: spaceId,
                 serverSeq: serverSeq,
                 json: json,
               ),
@@ -2794,8 +2804,8 @@ class $AppDbManager {
   $AppDbManager(this._db);
   $$UsersTableTableManager get users =>
       $$UsersTableTableManager(_db, _db.users);
-  $$ListsTableTableManager get lists =>
-      $$ListsTableTableManager(_db, _db.lists);
+  $$SpacesTableTableManager get spaces =>
+      $$SpacesTableTableManager(_db, _db.spaces);
   $$ItemsTableTableManager get items =>
       $$ItemsTableTableManager(_db, _db.items);
   $$OpsTableTableManager get ops => $$OpsTableTableManager(_db, _db.ops);

@@ -6,12 +6,12 @@ import 'package:listopher_core/core.dart';
 
 import 'app_db.dart';
 import 'apply_item_op.dart';
-import 'apply_list_op.dart';
+import 'apply_space_op.dart';
 
-/// log a change made on this phone: save op in outbox + update list/item rows.
+/// log a change made on this phone: save op in outbox + update space/item rows.
 Future<void> record(
   AppDb db, {
-  required String listId,
+  required String spaceId,
   String? itemId,
   required OpBody body,
 }) {
@@ -22,14 +22,12 @@ Future<void> record(
     )..where((u) => u.isMe.equals(true))).getSingleOrNull();
     if (me == null) throw StateError('no me user; createMe first');
 
-    // group comes from existing list. new/local list = null
-    final list = await (db.select(
-      db.lists,
-    )..where((l) => l.id.equals(listId))).getSingleOrNull();
+    final space = await (db.select(
+      db.spaces,
+    )..where((s) => s.id.equals(spaceId))).getSingleOrNull();
     final op = Op(
       id: newId(),
-      groupId: list?.groupId,
-      listId: listId,
+      spaceId: spaceId,
       itemId: itemId,
       userId: me.id,
       clientTime: DateTime.now().toUtc(),
@@ -43,16 +41,16 @@ Future<void> record(
         .insert(
           OpsCompanion.insert(
             id: op.id,
-            listId: listId,
+            spaceId: spaceId,
             json: jsonEncode(opToJson(op)),
           ),
         );
 
     // replace whole row: upsert skips null cols, so cleared fields would stay
-    // list row. item ops skip it: rewriting same row wakes every watchLists listener
-    final newList = itemId == null ? applyListOp(list, op) : null;
-    if (newList != null) {
-      await db.into(db.lists).insert(newList, mode: InsertMode.insertOrReplace);
+    // space row. item ops skip it: rewriting same row wakes every watchSpaces listener
+    final newSpace = itemId == null ? applySpaceOp(space, op) : null;
+    if (newSpace != null) {
+      await db.into(db.spaces).insert(newSpace, mode: InsertMode.insertOrReplace);
     }
 
     // item row

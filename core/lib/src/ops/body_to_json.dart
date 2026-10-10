@@ -1,16 +1,15 @@
-import 'day_to_json.dart';
 import 'op.dart';
 
 /// OpBody → {type, payload}. type string = wire name from adr 5.
 Map<String, Object?> bodyToJson(OpBody body) => switch (body) {
       // sealed switch: new op type added → compiler forces case here.
-      ListCreate(:final name, :final date) => {
-          'type': 'list.create',
-          'payload': {'name': name, 'date': dayToJson(date)},
+      SpaceCreate(:final name, :final private) => {
+          'type': 'space.create',
+          'payload': {'name': name, 'private': private},
         },
-      ListUpdate(:final name, :final date) => {
-          'type': 'list.update',
-          'payload': {'name': name, 'date': dayToJson(date)},
+      SpaceRename(:final name) => {
+          'type': 'space.rename',
+          'payload': {'name': name},
         },
       ItemAdd(:final name, :final quantity, :final unit, :final note, :final requestedBy) => {
           'type': 'item.add',

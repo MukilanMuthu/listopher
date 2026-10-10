@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
-// app entry. placeholder screen for now.
-void main() => runApp(
-      const MaterialApp(home: Scaffold(body: Center(child: Text('listopher')))),
-    );
+import 'package:listopher/store/store.dart';
+import 'package:listopher/ui/ui.dart';
+
+// app entry: open db, show app.
+void main() {
+  final db = openAppDb();
+  runApp(ListopherApp(db: db));
+}

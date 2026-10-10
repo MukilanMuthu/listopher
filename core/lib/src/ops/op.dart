@@ -7,13 +7,10 @@ class Op {
   /// uuid, made on phone. lets phone create ops offline.
   final String id;
 
-  /// group list belongs to. null = local-only list, never synced.
-  final String? groupId;
+  /// space this op touches.
+  final String spaceId;
 
-  /// list this op touches.
-  final String listId;
-
-  /// item this op touches. null for list ops (list.create, list.update).
+  /// item this op touches. null for space ops (space.create, space.rename).
   final String? itemId;
 
   /// user who made change. blame comes from here.
@@ -30,8 +27,7 @@ class Op {
 
   const Op({
     required this.id,
-    required this.groupId,
-    required this.listId,
+    required this.spaceId,
     required this.itemId,
     required this.userId,
     required this.clientTime,
@@ -45,27 +41,25 @@ sealed class OpBody {
   const OpBody();
 }
 
-/// list.create — new list.
-class ListCreate extends OpBody {
+/// space.create — new space.
+class SpaceCreate extends OpBody {
   final String name;
 
-  /// shopping day. date only, time ignored. null = no date.
-  final DateTime? date;
+  /// true = this phone's private space, never synced or shared.
+  final bool private;
 
-  const ListCreate({required this.name, required this.date});
+  const SpaceCreate({required this.name, required this.private});
 }
 
-/// list.update — rename list or change date.
-/// sends full state, not diff: null date = date removed.
-/// ponytail: whole-op last-writer-wins. two people edit name + date at same time → one edit lost. fine for lists.
-class ListUpdate extends OpBody {
+/// space.rename — new name for space.
+/// ponytail: whole-op last-writer-wins. two renames at once → one lost. fine for names.
+class SpaceRename extends OpBody {
   final String name;
-  final DateTime? date;
 
-  const ListUpdate({required this.name, required this.date});
+  const SpaceRename({required this.name});
 }
 
-/// item.add — new item on list.
+/// item.add — new item in space.
 class ItemAdd extends OpBody {
   final String name;
 
@@ -91,7 +85,7 @@ class ItemAdd extends OpBody {
 
 /// item.update — edit item.
 /// sends full state, not diff: null field = field cleared.
-/// ponytail: whole-op last-writer-wins, same limit as ListUpdate.
+/// ponytail: whole-op last-writer-wins, same limit as SpaceRename.
 class ItemUpdate extends OpBody {
   final String name;
   final double? quantity;

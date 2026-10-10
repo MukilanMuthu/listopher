@@ -48,20 +48,20 @@ core/
 
 server/
   accounts   createAccount() -> token, authenticate(token) -> user
-  groups     createGroup(), createInvite(), joinGroup(invite)
-  oplog      appendOps(group, ops) -> seqs, opsAfter(group, seq)
+  spaces     createSpace(), createInvite(), joinSpace(invite)
+  oplog      appendOps(space, ops) -> seqs, opsAfter(space, seq)
 
 app/
   store      record(op)            apply locally + queue in outbox
-             watchLists(), watchItems(list)   streams for UI/widget/notification
-  sync       sync(group)           push outbox, pull new ops, rebuild state
-  join       join(qrPayload)       account if needed, join group, first sync
-  additems   addItems(list, items, requestedBy)   only way items get created
+             watchSpaces(), watchItems()   streams for UI/widget/notification
+  sync       sync(space)           push outbox, pull new ops, rebuild state
+  join       join(qrPayload)       account if needed, join space, first sync
+  additems   addItems(space, items, requestedBy)   only way items get created
   ui / widget / notification       read store, call record/sync. No logic.
 ```
 
 - **`store` is the deepest module.** Drift tables, materialization ("op → item state") and the outbox are all hidden behind `record` and the watch streams.
-- **Rebuilding state:** `sync` rebuilds a list by replaying all of its ops. That's cheap for shopping lists. Upgrade path: rebuild only from the first changed seq.
+- **Rebuilding state:** `sync` rebuilds a space by replaying all of its ops. That's cheap for shopping lists. Upgrade path: rebuild only from the first changed seq.
 - **`ItemParser` is deferred.** There's no seam until a second adapter exists (the LLM parser). Until then, `addItems` is the seam.
 - **No repository interfaces, no use-case classes, no state-management framework** until plain streams + `StreamBuilder` hurt. No fakes of our own code.
 

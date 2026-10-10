@@ -6,8 +6,7 @@ import 'op.dart';
 /// server must catch → reply 400. never trust phone json.
 Op opFromJson(Map<String, Object?> json) => Op(
       id: json['id'] as String,
-      groupId: json['group_id'] as String?,
-      listId: json['list_id'] as String,
+      spaceId: json['space_id'] as String,
       itemId: json['item_id'] as String?,
       userId: json['user_id'] as String,
       // utc in, utc kept.

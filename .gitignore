@@ -1,3 +1,6 @@
 # dart/flutter build + tool caches
 .dart_tool/
 build/
+
+# windows desktop build: local dev only, not shipped
+app/windows/

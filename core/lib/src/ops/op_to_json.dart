@@ -4,8 +4,7 @@ import 'op.dart';
 /// Op → json map. wire format between app + server.
 Map<String, Object?> opToJson(Op op) => {
       'id': op.id,
-      'group_id': op.groupId,
-      'list_id': op.listId,
+      'space_id': op.spaceId,
       'item_id': op.itemId,
       'user_id': op.userId,
       // always utc. phones in different timezones must agree.

@@ -1,6 +1,7 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:listopher/store/src/apply_item_op.dart';
+import 'package:listopher/store/src/apply_space_op.dart';
 import 'package:listopher/store/store.dart';
 import 'package:listopher_core/core.dart';
 
@@ -10,14 +11,12 @@ void main() {
   setUp(() => db = AppDb(NativeDatabase.memory()));
   tearDown(() => db.close());
 
-  // helper: make list "shop" and add rice 1.5 kg. returns ids.
-  Future<({String list, String item})> seed() async {
-    final list = newId();
+  // helper: add rice 1.5 kg to the private space (createMe made it). returns ids.
+  Future<({String space, String item})> seed() async {
+    final space = (await watchSpaces(db).first).single.id;
     final item = newId();
     await record(db,
-        listId: list, body: const ListCreate(name: 'shop', date: null));
-    await record(db,
-        listId: list,
+        spaceId: space,
         itemId: item,
         body: const ItemAdd(
             name: 'rice',
@@ -25,7 +24,7 @@ void main() {
             unit: 'kg',
             note: null,
             requestedBy: 'mum'));
-    return (list: list, item: item);
+    return (space: space, item: item);
   }
 
   group('me', () {
@@ -34,6 +33,14 @@ void main() {
       final me = await watchMe(db).first;
       expect(me?.displayName, 'Asha');
       expect(me?.isMe, true);
+    });
+
+    test('createMe also makes exactly one private space', () async {
+      await createMe(db, 'Asha');
+      final spaces = await watchSpaces(db).first;
+      expect(spaces.length, 1);
+      expect(spaces.single.private, true);
+      expect(spaces.single.serverUrl, isNull);
     });
 
     test('createMe twice throws', () async {
@@ -50,8 +57,8 @@ void main() {
     test('without me throws', () {
       expect(
           record(db,
-              listId: newId(),
-              body: const ListCreate(name: 'x', date: null)),
+              spaceId: newId(),
+              body: const SpaceCreate(name: 'x', private: false)),
           throwsStateError);
     });
 
@@ -60,10 +67,10 @@ void main() {
       final me = (await watchMe(db).first)!;
       final s = await seed();
       await record(db,
-          listId: s.list,
+          spaceId: s.space,
           itemId: s.item,
           body: const ItemCheck(fulfilledBy: 'ravi'));
-      final item = (await watchItems(db, s.list).first).single;
+      final item = (await watchItems(db).first).single;
       expect(item.name, 'rice');
       expect(item.checked, true);
       expect(item.checkedBy, me.id);
@@ -74,12 +81,12 @@ void main() {
       await createMe(db, 'Asha');
       final s = await seed();
       await record(db,
-          listId: s.list,
+          spaceId: s.space,
           itemId: s.item,
           body: const ItemCheck(fulfilledBy: 'ravi'));
       await record(db,
-          listId: s.list, itemId: s.item, body: const ItemUncheck());
-      final item = (await watchItems(db, s.list).first).single;
+          spaceId: s.space, itemId: s.item, body: const ItemUncheck());
+      final item = (await watchItems(db).first).single;
       expect(item.checked, false);
       expect(item.checkedBy, isNull);
       expect(item.checkedAt, isNull);
@@ -90,11 +97,11 @@ void main() {
       await createMe(db, 'Asha');
       final s = await seed();
       await record(db,
-          listId: s.list,
+          spaceId: s.space,
           itemId: s.item,
           body: const ItemUpdate(
               name: 'rice', quantity: 2, unit: null, note: null));
-      final item = (await watchItems(db, s.list).first).single;
+      final item = (await watchItems(db).first).single;
       expect(item.unit, isNull);
       expect(item.quantity, 2);
     });
@@ -103,22 +110,84 @@ void main() {
       await createMe(db, 'Asha');
       final s = await seed();
       await record(db,
-          listId: s.list, itemId: s.item, body: const ItemDelete());
-      expect(await watchItems(db, s.list).first, isEmpty);
+          spaceId: s.space, itemId: s.item, body: const ItemDelete());
+      expect(await watchItems(db).first, isEmpty);
     });
 
-    test('every record adds one outbox op', () async {
+    test('every record adds one outbox op carrying spaceId', () async {
       await createMe(db, 'Asha');
-      await seed(); // 2 records
+      final s = await seed(); // space.create (createMe) + item.add = 2 records
       final ops = await db.select(db.ops).get();
       expect(ops.length, 2);
-      expect(ops.every((o) => o.serverSeq == null), true);
+      expect(ops.every((o) => o.serverSeq == null && o.spaceId == s.space), true);
     });
 
-    test('watchLists shows created list', () async {
+    test('watchSpaces: private first, then name', () async {
+      await createMe(db, 'Asha');
+      await record(db,
+          spaceId: newId(),
+          body: const SpaceCreate(name: 'Zoo', private: false));
+      await record(db,
+          spaceId: newId(),
+          body: const SpaceCreate(name: 'Apt', private: false));
+      final spaces = await watchSpaces(db).first;
+      expect(spaces.map((s) => s.private), [true, false, false]);
+      expect(spaces.skip(1).map((s) => s.name), ['Apt', 'Zoo']);
+    });
+
+    test('rename changes name', () async {
+      await createMe(db, 'Asha');
+      final id = newId();
+      await record(db,
+          spaceId: id, body: const SpaceCreate(name: 'Home', private: false));
+      await record(db, spaceId: id, body: const SpaceRename(name: 'Flat'));
+      final spaces = await watchSpaces(db).first;
+      expect(spaces.any((s) => s.name == 'Flat'), true);
+      expect(spaces.any((s) => s.name == 'Home'), false);
+    });
+
+    test('watchItems spans spaces', () async {
       await createMe(db, 'Asha');
       await seed();
-      expect((await watchLists(db).first).single.name, 'shop');
+      final other = newId();
+      await record(db,
+          spaceId: other,
+          body: const SpaceCreate(name: 'Home', private: false));
+      await record(db,
+          spaceId: other,
+          itemId: newId(),
+          body: const ItemAdd(
+              name: 'soap',
+              quantity: null,
+              unit: null,
+              note: null,
+              requestedBy: 'x'));
+      final items = await watchItems(db).first;
+      expect(items.map((i) => i.name), ['rice', 'soap']);
+      expect(items.map((i) => i.spaceId).toSet().length, 2);
+    });
+  });
+
+  group('applySpaceOp', () {
+    // space-level op (no item)
+    Op op(OpBody body) => Op(
+        id: 'o',
+        spaceId: 's',
+        itemId: null,
+        userId: 'u',
+        clientTime: DateTime.utc(2026),
+        serverSeq: null,
+        body: body);
+
+    test('rename on null stays null', () {
+      expect(applySpaceOp(null, op(const SpaceRename(name: 'x'))), isNull);
+    });
+
+    test('create then rename', () {
+      final made =
+          applySpaceOp(null, op(const SpaceCreate(name: 'a', private: false)));
+      expect(made?.name, 'a');
+      expect(applySpaceOp(made, op(const SpaceRename(name: 'b')))?.name, 'b');
     });
   });
 
@@ -126,8 +195,7 @@ void main() {
     // op with given body on item "i"
     Op op(OpBody body) => Op(
         id: 'o',
-        groupId: null,
-        listId: 'l',
+        spaceId: 's',
         itemId: 'i',
         userId: 'u',
         clientTime: DateTime.utc(2026),

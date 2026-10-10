@@ -15,13 +15,13 @@ class Users extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-/// shopping lists. view of the op log.
-@DataClassName('ListRow')
-class Lists extends Table {
+/// spaces: where items live. view of the op log.
+@DataClassName('SpaceRow')
+class Spaces extends Table {
   TextColumn get id => text()();
-  TextColumn get groupId => text().nullable()(); // null = local-only list
   TextColumn get name => text()();
-  DateTimeColumn get date => dateTime().nullable()(); // shopping day
+  BoolColumn get private => boolean()(); // true = this phone only, never shared
+  TextColumn get serverUrl => text().nullable()(); // null = not shared yet
   TextColumn get createdBy => text()();
   DateTimeColumn get createdAt => dateTime()();
 
@@ -29,11 +29,11 @@ class Lists extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-/// list items. view of the op log.
+/// space items. view of the op log.
 @DataClassName('ItemRow')
 class Items extends Table {
   TextColumn get id => text()();
-  TextColumn get listId => text()();
+  TextColumn get spaceId => text()();
   TextColumn get name => text()();
   RealColumn get quantity => real().nullable()();
   TextColumn get unit => text().nullable()();
@@ -55,7 +55,7 @@ class Items extends Table {
 class Ops extends Table {
   IntColumn get seq => integer().autoIncrement()(); // local insertion order
   TextColumn get id => text().unique()();
-  TextColumn get listId => text()();
+  TextColumn get spaceId => text()();
   IntColumn get serverSeq => integer().nullable()();
   TextColumn get json => text()(); // jsonEncode(opToJson(op))
 }
