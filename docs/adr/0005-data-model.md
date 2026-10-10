@@ -31,9 +31,9 @@ op        id, group_id?, list_id, item_id?, user_id,
 | type | payload |
 |------|---------|
 | `list.create` | `{name, date?}` |
-| `list.update` | `{name?, date?}` |
+| `list.update` | `{name, date?}` (full state: null date = removed) |
 | `item.add` | `{name, quantity?, unit?, note?, requested_by}` |
-| `item.update` | `{name?, quantity?, unit?, note?}` |
+| `item.update` | `{name, quantity?, unit?, note?}` (full state: null = cleared) |
 | `item.check` | `{fulfilled_by}` (defaults to the acting user) |
 | `item.uncheck` | `{}` (clears `checked_by`, `checked_at` and `fulfilled_by`) |
 | `item.delete` | `{}` |

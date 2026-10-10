@@ -1,0 +1,3 @@
+# dart/flutter build + tool caches
+.dart_tool/
+build/

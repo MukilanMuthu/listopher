@@ -16,7 +16,7 @@ We need offline edits, merging, and "git blame" history (who requested, checked 
   2. The server authenticates the user and assigns each op a `server_seq` (a per-group sequence number).
   3. The client fetches all ops after the last `server_seq` it has seen.
   4. The client rebuilds local state: confirmed ops in `server_seq` order, then any ops still pending.
-- **Conflicts:** last-writer-wins per field, by `server_seq`. Example: an offline "uncheck" that reaches the server after a "check" wins.
+- **Conflicts:** last-writer-wins per op, by `server_seq`. Update ops carry the full editable state, so a null means "cleared", not "unchanged". Example: an offline "uncheck" that reaches the server after a "check" wins.
 - Ops are never deleted. The op log *is* the blame history.
 
 ## Consequences

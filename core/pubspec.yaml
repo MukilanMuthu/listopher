@@ -1,0 +1,11 @@
+# shared by app + server. pure dart, no flutter, no io.
+name: listopher_core
+description: Op types and JSON shape shared by listopher app and server.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.0
+
+dev_dependencies:
+  test: ^1.25.0

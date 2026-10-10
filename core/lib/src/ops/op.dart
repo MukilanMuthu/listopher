@@ -1,0 +1,125 @@
+// op = one change. app + server pass these around. never edited after made.
+// all op classes live in this one file: dart `sealed` needs subclasses in same file.
+// see docs/adr/0005-data-model.md.
+
+/// One change + who made it + when. Body says what changed.
+class Op {
+  /// uuid, made on phone. lets phone create ops offline.
+  final String id;
+
+  /// group list belongs to. null = local-only list, never synced.
+  final String? groupId;
+
+  /// list this op touches.
+  final String listId;
+
+  /// item this op touches. null for list ops (list.create, list.update).
+  final String? itemId;
+
+  /// user who made change. blame comes from here.
+  final String userId;
+
+  /// phone clock when made. utc. shown to humans only, never used for ordering.
+  final DateTime clientTime;
+
+  /// order number from server. null = still in outbox, not synced yet.
+  final int? serverSeq;
+
+  /// what changed.
+  final OpBody body;
+
+  const Op({
+    required this.id,
+    required this.groupId,
+    required this.listId,
+    required this.itemId,
+    required this.userId,
+    required this.clientTime,
+    required this.serverSeq,
+    required this.body,
+  });
+}
+
+/// What changed. One subclass per op type. `sealed` → switch must cover all.
+sealed class OpBody {
+  const OpBody();
+}
+
+/// list.create — new list.
+class ListCreate extends OpBody {
+  final String name;
+
+  /// shopping day. date only, time ignored. null = no date.
+  final DateTime? date;
+
+  const ListCreate({required this.name, required this.date});
+}
+
+/// list.update — rename list or change date.
+/// sends full state, not diff: null date = date removed.
+/// ponytail: whole-op last-writer-wins. two people edit name + date at same time → one edit lost. fine for lists.
+class ListUpdate extends OpBody {
+  final String name;
+  final DateTime? date;
+
+  const ListUpdate({required this.name, required this.date});
+}
+
+/// item.add — new item on list.
+class ItemAdd extends OpBody {
+  final String name;
+
+  /// how much. decimal: 1.5 kg ok. null = not said.
+  final double? quantity;
+
+  /// free text: "kg", "L", "pack". any language. null = no unit ("soap 1").
+  final String? unit;
+
+  final String? note;
+
+  /// who asked for it. can differ from op.userId ("mum asked, i typed").
+  final String requestedBy;
+
+  const ItemAdd({
+    required this.name,
+    required this.quantity,
+    required this.unit,
+    required this.note,
+    required this.requestedBy,
+  });
+}
+
+/// item.update — edit item.
+/// sends full state, not diff: null field = field cleared.
+/// ponytail: whole-op last-writer-wins, same limit as ListUpdate.
+class ItemUpdate extends OpBody {
+  final String name;
+  final double? quantity;
+  final String? unit;
+  final String? note;
+
+  const ItemUpdate({
+    required this.name,
+    required this.quantity,
+    required this.unit,
+    required this.note,
+  });
+}
+
+/// item.check — ticked off. checker = op.userId.
+class ItemCheck extends OpBody {
+  /// who bought it. usually checker, can be other member ("ravi bought, i tick").
+  final String fulfilledBy;
+
+  const ItemCheck({required this.fulfilledBy});
+}
+
+/// item.uncheck — tick removed. clears checker + fulfiller.
+class ItemUncheck extends OpBody {
+  const ItemUncheck();
+}
+
+/// item.delete — item gone. op stays in log for blame.
+class ItemDelete extends OpBody {
+  const ItemDelete();
+}
