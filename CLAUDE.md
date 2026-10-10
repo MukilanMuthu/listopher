@@ -6,6 +6,7 @@ Shared shopping list. Local-first Flutter app (Android first) plus a self-hostab
 
 - Talk to the user in caveman style (terse, no fluff).
 - Never add Claude attribution to commits or PRs.
+- During development, commit straight to `main` with no feature branches. This changes once the app leaves development.
 
 ## Code rules
 
