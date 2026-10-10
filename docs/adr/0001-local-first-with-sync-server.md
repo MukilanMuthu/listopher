@@ -15,7 +15,7 @@ Listopher is a shared shopping list. Group members add items offline and sync la
 - The phone keeps a local SQLite database. It is the source of truth for the UI, the widget and the notification.
 - The app works fully offline. Changes queue up locally and sync when the phone is back online.
 - Sharing goes through a sync server. The server is open source and self-hostable.
-- Native UI: Kotlin on Android, Swift on iOS.
+- App: Flutter, Android first and iOS later ([ADR 7](0007-stack-and-module-design.md)).
 
 ## Consequences
 

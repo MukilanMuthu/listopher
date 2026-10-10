@@ -16,8 +16,8 @@ APNs and FCM only accept pushes to our published app when they are signed with o
   - by polling while the app is in the foreground,
   - when the user taps the **Sync** button on the ongoing notification or the widget.
 - The Sync button calls one sync action:
-  - Android: a short WorkManager job.
-  - iOS: an App Intent (iOS 17+).
+  - Android: the widget and notification buttons run Dart sync in the background.
+  - iOS: the widget button opens the app, and the app syncs when it opens ([ADR 7](0007-stack-and-module-design.md)).
 
 ## Consequences
 
