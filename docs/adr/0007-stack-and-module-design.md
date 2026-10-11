@@ -21,7 +21,7 @@ Status: Accepted
 | Server | `shelf` + SQLite (`sqlite3` package, plain SQL) | Small binary, official `dart` Docker image (~10 MB final image), one database file. Easy to self-host. |
 | Server build | `dart build cli` | `dart compile exe` fails with `sqlite3`'s build hooks |
 | Server API | Plain HTTP + JSON | Push ops, then pull ops after a seq. No WebSockets ([ADR 4](0004-push-hosted-only.md)). |
-| Auth | The server issues a random bearer token when an account is created. No passwords, no email. | Simplest option that works. Account recovery and multiple devices are deferred. |
+| Auth | Self-hosted: admin-created username + password. Hosted: Google/Apple sign-in (later). Session tokens either way. | See [ADR 8](0008-server-api.md) |
 | App DB | `drift` + `drift_flutter` | Stream queries for the UI, migrations, and `shareAcrossIsolates` so the widget and background code use the same DB |
 | HTTP client | `http` | First-party |
 | Background sync | `workmanager` | Android is reliable (15 min minimum). iOS is best-effort, so we don't rely on it. |
@@ -79,5 +79,4 @@ Tests go through module interfaces only.
 - iOS reuses all of the Dart code. Only the widget layout and the iOS setup are native.
 - Native code exists in exactly three places: the widget layouts, the Android QR channel, and the platform setup files.
 - iOS background sync is best-effort. Users get fresh data when they open the app, which is accepted.
-- Token-only auth means a lost phone loses the account. Recovery is deferred.
 - The new Dart build-hooks toolchain is a risk. If `dart build cli` breaks, pin the versions.

@@ -15,7 +15,7 @@ The app and the server are open source. Money should come from convenience only,
 | Paid (hosted) | Local + hosted server | Yes | Yes | Yes, our key |
 | Self-hosted | Local + own server | Yes | No (see [ADR 4](0004-push-hosted-only.md)) | BYOK: the operator sets their own LLM API key in the server config |
 
-- Users have a local profile only. An account is created on a server when they first share a list.
+- Without a server, a user has only a local profile and their private space. Sharing needs a server account: on self-hosted servers the admin creates it, on the hosted service you sign in with Google/Apple ([ADR 8](0008-server-api.md)).
 - Self-hosters get sharing for free. That is intended: what we sell is hosting and the LLM.
 
 ## Consequences

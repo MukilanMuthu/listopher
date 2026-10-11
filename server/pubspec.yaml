@@ -1,0 +1,19 @@
+# self-hostable sync server. pure dart. see docs/adr/0008-server-api.md.
+name: listopher_server
+description: Listopher sync server.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  crypto: ^3.0.7
+  hashlib: ^2.4.2
+  listopher_core:
+    path: ../core
+  shelf: ^1.4.2
+  shelf_router: ^1.1.4
+  sqlite3: ^3.7.0
+dev_dependencies:
+  test: ^1.33.0

@@ -7,7 +7,8 @@ plugins {
 android {
     namespace = "com.gnomebyte.listopher"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // ponytail: pinned to installed ndk. flutter default (28.2) not installed. newer ndk builds older code fine.
+    ndkVersion = "30.0.16248370"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
