@@ -7,3 +7,6 @@ export 'src/pull_ops.dart';
 export 'src/delete_space.dart';
 export 'src/space_gone.dart';
 export 'src/list_my_spaces.dart';
+export 'src/logout.dart';
+export 'src/delete_preview.dart';
+export 'src/delete_account.dart';

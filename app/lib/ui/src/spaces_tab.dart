@@ -6,6 +6,7 @@ import 'package:listopher/store/store.dart';
 
 import 'delete_space_button.dart';
 import 'login_screen.dart';
+import 'server_tile.dart';
 import 'start_share_space.dart';
 import 'space_label.dart';
 
@@ -24,17 +25,13 @@ class SpacesTab extends StatelessWidget {
         stream: watchSpaces(db),
         builder: (context, snap) => ListView(
           children: [
-            // ponytail: no log out yet, and re-login to the same url replaces the account.
+            // ponytail: re-login to the same url replaces the account.
             StreamBuilder<List<ServerAccountRow>>(
               stream: watchServerAccounts(db),
               builder: (context, snap) => Column(
                 children: [
                   for (final s in snap.data ?? <ServerAccountRow>[])
-                    ListTile(
-                      leading: const Icon(Icons.cloud_done),
-                      title: Text(t.signedInTo(s.url)),
-                      subtitle: Text(s.displayName),
-                    ),
+                    ServerTile(db: db, client: client, server: s),
                 ],
               ),
             ),

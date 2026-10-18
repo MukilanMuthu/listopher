@@ -303,6 +303,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not delete the space'**
   String get couldNotDeleteSpace;
+
+  /// No description provided for @logOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out'**
+  String get logOut;
+
+  /// No description provided for @couldNotLogOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not log out'**
+  String get couldNotLogOut;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your account on {server}?'**
+  String deleteAccountQuestion(String server);
+
+  /// No description provided for @handedOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Handed to another member: {spaces}'**
+  String handedOver(String spaces);
+
+  /// No description provided for @willBeDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted: {spaces}'**
+  String willBeDeleted(String spaces);
+
+  /// No description provided for @couldNotDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete the account'**
+  String get couldNotDeleteAccount;
 }
 
 class _AppLocalizationsDelegate

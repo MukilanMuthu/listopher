@@ -36,5 +36,15 @@
   "delete": "Delete",
   "deleteSpaceQuestion": "Delete {space} for everyone?",
   "@deleteSpaceQuestion": {"placeholders": {"space": {"type": "String"}}},
-  "couldNotDeleteSpace": "Could not delete the space"
+  "couldNotDeleteSpace": "Could not delete the space",
+  "logOut": "Log out",
+  "couldNotLogOut": "Could not log out",
+  "deleteAccount": "Delete account",
+  "deleteAccountQuestion": "Delete your account on {server}?",
+  "@deleteAccountQuestion": {"placeholders": {"server": {"type": "String"}}},
+  "handedOver": "Handed to another member: {spaces}",
+  "@handedOver": {"placeholders": {"spaces": {"type": "String"}}},
+  "willBeDeleted": "Deleted: {spaces}",
+  "@willBeDeleted": {"placeholders": {"spaces": {"type": "String"}}},
+  "couldNotDeleteAccount": "Could not delete the account"
 }

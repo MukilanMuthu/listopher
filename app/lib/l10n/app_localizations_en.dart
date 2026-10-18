@@ -117,4 +117,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotDeleteSpace => 'Could not delete the space';
+
+  @override
+  String get logOut => 'Log out';
+
+  @override
+  String get couldNotLogOut => 'Could not log out';
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String deleteAccountQuestion(String server) {
+    return 'Delete your account on $server?';
+  }
+
+  @override
+  String handedOver(String spaces) {
+    return 'Handed to another member: $spaces';
+  }
+
+  @override
+  String willBeDeleted(String spaces) {
+    return 'Deleted: $spaces';
+  }
+
+  @override
+  String get couldNotDeleteAccount => 'Could not delete the account';
 }

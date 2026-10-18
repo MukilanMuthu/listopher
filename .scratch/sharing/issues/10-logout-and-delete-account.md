@@ -4,9 +4,9 @@
 
 **Blocked by:** 09 (Delete space)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Logout ends the session on the server and removes the server account from the phone; that server's spaces are removed locally
-- [ ] Delete account shows the delete preview (transfer vs delete) as a warning
-- [ ] After confirming, the account is deleted and local cleanup matches the logout case
-- [ ] Tested against the in-process server
+- [x] Logout ends the session on the server and removes the server account from the phone; that server's spaces are removed locally
+- [x] Delete account shows the delete preview (transfer vs delete) as a warning
+- [x] After confirming, the account is deleted and local cleanup matches the logout case
+- [x] Tested against the in-process server
