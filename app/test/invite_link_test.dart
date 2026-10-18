@@ -16,6 +16,11 @@ void main() {
     expect(p.space, 's1');
   });
 
+  test('parsed server is normalized so it matches the stored account url', () {
+    final p = parseInviteLink(buildInviteLink('HTTP://Srv:8080/', 's1', 't'));
+    expect(p.server, 'http://srv:8080');
+  });
+
   test('bad links throw BadInviteLink', () {
     for (final bad in [
       '',

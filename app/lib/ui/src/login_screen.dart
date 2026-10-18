@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _busy = true;
       _error = null;
     });
-    final url = _url.text.trim();
+    final url = normalizeServerUrl(_url.text); // stored spelling, matches parsed invite links
     final result = await login(widget.client, url, _user.text.trim(), _password.text);
     switch (result) {
       case LoginOk():

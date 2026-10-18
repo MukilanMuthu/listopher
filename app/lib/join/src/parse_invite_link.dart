@@ -1,3 +1,5 @@
+import 'package:listopher/net/net.dart';
+
 import 'invite_link.dart';
 
 /// read a pasted invite link. throws BadInviteLink if it is not one.
@@ -13,5 +15,5 @@ InviteLink parseInviteLink(String text) {
       (invite ?? '').isEmpty) {
     throw BadInviteLink(text);
   }
-  return InviteLink(server!, space!, invite!);
+  return InviteLink(normalizeServerUrl(server!), space!, invite!); // same spelling as stored accounts
 }

@@ -71,6 +71,25 @@ void main() {
     await unmount(tester);
   });
 
+  testWidgets('address is saved in normal form', (tester) async {
+    await tester.pumpWidget(ListopherApp(db: db, client: client));
+    await settle(tester);
+    await tester.tap(find.text('Spaces'));
+    await settle(tester);
+    await tester.tap(find.text('Log in to server'));
+    await settle(tester);
+    final fields = find.byType(TextField);
+    await tester.enterText(fields.at(0), ' HTTP://SRV/ ');
+    await tester.enterText(fields.at(1), 'alice');
+    await tester.enterText(fields.at(2), 'pw');
+    await tester.pump();
+    await tester.tap(find.widgetWithText(FilledButton, 'Log in'));
+    await settle(tester);
+
+    expect((await db.select(db.serverAccounts).get()).single.url, 'http://srv');
+    await unmount(tester);
+  });
+
   testWidgets('bad password shows error and stays on the screen', (tester) async {
     await tester.pumpWidget(ListopherApp(db: db, client: client));
     await settle(tester);
