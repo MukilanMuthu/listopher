@@ -18,7 +18,7 @@ Foreground auto-sync is done ([ADR 4](0004-push-hosted-only.md)): it syncs on op
 - **No overlap lock.** A background sync can run at the same time as a foreground one. The server already ignores a resent op (ADR 3), so a double send is harmless.
 - **Errors:** the background job is silent. It saves its last error in the DB, and the next app open shows it once and then clears it.
 - **No notifications** for items that others add.
-- **One DB across isolates.** The app opens drift with `shareAcrossIsolates: true`, so a background write shows up in the open app's lists.
+- **Separate DB connections per isolate.** The app and the background job each open their own SQLite connection to the same file, with `PRAGMA busy_timeout = 5000` so a second writer waits instead of failing. We do not share one drift server across isolates: it may die when WorkManager destroys the background engine while the app is connected. Cost: the app's lists do not see a background write by themselves, so the app re-queries all tables on resume. A background write while the app is in the foreground shows only after the next resume or local change.
 - **Later step:** the Sync buttons on the notification and the widget. They will call the same `sync`.
 
 ## Consequences

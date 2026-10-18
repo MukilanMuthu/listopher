@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     // open, resume, poll and local changes all sync from here on
     _auto = startAutoSync(widget.db, widget.client, onError: _onSyncError);
-    _showBackgroundError();
+    _showBackgroundError().catchError((_) {}); // nice-to-have: never leak an error
   }
 
   /// background sync left an error? say so once, then clear it (ADR 9).
@@ -37,11 +37,12 @@ class _HomeScreenState extends State<HomeScreen> {
   /// reported by the on-open foreground sync.
   Future<void> _showBackgroundError() async {
     final state = await readBgSyncState(widget.db);
-    if (state.lastError == null || !mounted) return; // nothing saved, or screen gone
+    final shown = state.lastError;
+    if (shown == null || !mounted) return; // nothing saved, or screen gone
     final t = AppLocalizations.of(context);
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(t.backgroundSyncFailed)));
-    await clearBgSyncError(widget.db);
+    await clearBgSyncError(widget.db, shown); // keeps a newer error
   }
 
   @override

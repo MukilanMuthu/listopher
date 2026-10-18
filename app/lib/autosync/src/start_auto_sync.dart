@@ -66,6 +66,10 @@ AutoSync startAutoSync(
   // resume = sync now and poll; anything else = quiet
   final lifecycle = AppLifecycleListener(onStateChange: (state) {
     if (state == AppLifecycleState.resumed) {
+      // the background job wrote through its own connection: streams never saw it
+      // ponytail: a background write while the app is in the foreground shows only
+      // after the next resume or local change.
+      db.markTablesUpdated(db.allTables);
       auto();
       startPolling();
     } else {

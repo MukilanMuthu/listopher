@@ -7,6 +7,7 @@ import 'package:listopher/bgsync/bgsync.dart';
 import 'package:listopher/net/net.dart';
 import 'package:listopher/share/share.dart';
 import 'package:listopher/store/store.dart';
+import 'package:listopher/sync/sync.dart';
 import 'package:listopher_server/server.dart';
 import 'package:shelf/shelf.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -82,6 +83,31 @@ void main() {
     expect(s.failures, 0);
     expect(s.lastFailAt, isNull);
     expect(s.lastError, isNotNull); // kept for the user to see
+  });
+
+  test('good foreground sync resets failures', () async {
+    await backgroundSync(db, client, t0);
+    expect(await failures(), 1);
+    failing = false;
+    await sync(db, client);
+    final s = await readBgSyncState(db);
+    expect(s.failures, 0);
+    expect(s.lastFailAt, isNull);
+  });
+
+  test('clock moved back: job still runs', () async {
+    await backgroundSync(db, client, t0);
+    final before = requests;
+    await backgroundSync(db, client, t0.subtract(const Duration(days: 1)));
+    expect(requests, greaterThan(before));
+  });
+
+  test('clearBgSyncError only clears the error the user saw', () async {
+    await saveBgSyncFailure(db, t0, 'new');
+    await clearBgSyncError(db, 'old');
+    expect((await readBgSyncState(db)).lastError, 'new');
+    await clearBgSyncError(db, 'new');
+    expect((await readBgSyncState(db)).lastError, isNull);
   });
 
   test('never throws', () async {

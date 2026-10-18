@@ -12,8 +12,12 @@ Future<void> backgroundSync(AppDb db, http.Client client, DateTime now) async {
   try {
     final state = await readBgSyncState(db);
     final failAt = state.lastFailAt;
-    // still inside the wait: no network
-    if (failAt != null && now.isBefore(failAt.add(backoffWait(state.failures)))) return;
+    // still inside the wait: no network. clock went back (now < failAt): wait is over
+    if (failAt != null &&
+        !now.isBefore(failAt) &&
+        now.isBefore(failAt.add(backoffWait(state.failures)))) {
+      return;
+    }
     await sync(db, client); // good sync resets the failures itself
   } catch (e) {
     try {

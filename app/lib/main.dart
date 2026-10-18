@@ -7,11 +7,12 @@ import 'package:listopher/bgsync/bgsync.dart';
 import 'package:listopher/store/store.dart';
 import 'package:listopher/ui/ui.dart';
 
-// app entry: schedule background sync (Android), open db, show app.
+// app entry: open db, show app, then schedule background sync (Android).
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // workmanager is Android only here; skip on Windows and iOS
-  if (Platform.isAndroid) await startBackgroundSync();
   final db = openAppDb();
   runApp(ListopherApp(db: db, client: http.Client()));
+  // optional, not awaited: a failure only means no background sync this launch.
+  // workmanager is Android only here; skip on Windows and iOS
+  if (Platform.isAndroid) startBackgroundSync().catchError((_) {});
 }
