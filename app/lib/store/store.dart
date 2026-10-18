@@ -15,3 +15,4 @@ export 'src/confirm_ops.dart';
 export 'src/last_seq.dart';
 export 'src/store_ops.dart';
 export 'src/rebuild_space.dart';
+export 'src/add_bare_space.dart';

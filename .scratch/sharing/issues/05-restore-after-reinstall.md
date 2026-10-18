@@ -4,8 +4,8 @@
 
 **Blocked by:** 04 (Sync)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] After login, member spaces are fetched and pulled
-- [ ] Restored spaces show their items and names
-- [ ] Test: wipe the phone store, log in again, shared spaces and items are back
+- [x] After login, member spaces are fetched and pulled
+- [x] Restored spaces show their items and names
+- [x] Test: wipe the phone store, log in again, shared spaces and items are back
