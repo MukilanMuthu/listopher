@@ -71,6 +71,18 @@ class ServerAccounts extends Table {
   Set<Column> get primaryKey => {url};
 }
 
+/// back-off state of the background sync. one row, id always 1.
+@DataClassName('BgSyncStateRow')
+class BgSyncState extends Table {
+  IntColumn get id => integer()(); // always 1
+  IntColumn get failures => integer().withDefault(const Constant(0))(); // fails in a row
+  DateTimeColumn get lastFailAt => dateTime().nullable()();
+  TextColumn get lastError => text().nullable()(); // kept until the user sees it
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// who is in a shared space, as the server last told us. names and owner work offline.
 @DataClassName('MemberRow')
 class Members extends Table {

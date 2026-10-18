@@ -24,3 +24,6 @@ export 'src/user_id_in.dart';
 export 'src/unsent_count.dart';
 export 'src/watch_owned_space_ids.dart';
 export 'src/watch_newest_unsent_seq.dart';
+export 'src/read_bg_sync_state.dart';
+export 'src/save_bg_sync_failure.dart';
+export 'src/reset_bg_sync_failures.dart';

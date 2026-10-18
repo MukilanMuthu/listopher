@@ -2425,6 +2425,308 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
   }
 }
 
+class $BgSyncStateTable extends BgSyncState
+    with TableInfo<$BgSyncStateTable, BgSyncStateRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BgSyncStateTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _failuresMeta = const VerificationMeta(
+    'failures',
+  );
+  @override
+  late final GeneratedColumn<int> failures = GeneratedColumn<int>(
+    'failures',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastFailAtMeta = const VerificationMeta(
+    'lastFailAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastFailAt = GeneratedColumn<DateTime>(
+    'last_fail_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastErrorMeta = const VerificationMeta(
+    'lastError',
+  );
+  @override
+  late final GeneratedColumn<String> lastError = GeneratedColumn<String>(
+    'last_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, failures, lastFailAt, lastError];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'bg_sync_state';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BgSyncStateRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('failures')) {
+      context.handle(
+        _failuresMeta,
+        failures.isAcceptableOrUnknown(data['failures']!, _failuresMeta),
+      );
+    }
+    if (data.containsKey('last_fail_at')) {
+      context.handle(
+        _lastFailAtMeta,
+        lastFailAt.isAcceptableOrUnknown(
+          data['last_fail_at']!,
+          _lastFailAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_error')) {
+      context.handle(
+        _lastErrorMeta,
+        lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BgSyncStateRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BgSyncStateRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      failures: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}failures'],
+      )!,
+      lastFailAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_fail_at'],
+      ),
+      lastError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error'],
+      ),
+    );
+  }
+
+  @override
+  $BgSyncStateTable createAlias(String alias) {
+    return $BgSyncStateTable(attachedDatabase, alias);
+  }
+}
+
+class BgSyncStateRow extends DataClass implements Insertable<BgSyncStateRow> {
+  final int id;
+  final int failures;
+  final DateTime? lastFailAt;
+  final String? lastError;
+  const BgSyncStateRow({
+    required this.id,
+    required this.failures,
+    this.lastFailAt,
+    this.lastError,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['failures'] = Variable<int>(failures);
+    if (!nullToAbsent || lastFailAt != null) {
+      map['last_fail_at'] = Variable<DateTime>(lastFailAt);
+    }
+    if (!nullToAbsent || lastError != null) {
+      map['last_error'] = Variable<String>(lastError);
+    }
+    return map;
+  }
+
+  BgSyncStateCompanion toCompanion(bool nullToAbsent) {
+    return BgSyncStateCompanion(
+      id: Value(id),
+      failures: Value(failures),
+      lastFailAt: lastFailAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastFailAt),
+      lastError: lastError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastError),
+    );
+  }
+
+  factory BgSyncStateRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BgSyncStateRow(
+      id: serializer.fromJson<int>(json['id']),
+      failures: serializer.fromJson<int>(json['failures']),
+      lastFailAt: serializer.fromJson<DateTime?>(json['lastFailAt']),
+      lastError: serializer.fromJson<String?>(json['lastError']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'failures': serializer.toJson<int>(failures),
+      'lastFailAt': serializer.toJson<DateTime?>(lastFailAt),
+      'lastError': serializer.toJson<String?>(lastError),
+    };
+  }
+
+  BgSyncStateRow copyWith({
+    int? id,
+    int? failures,
+    Value<DateTime?> lastFailAt = const Value.absent(),
+    Value<String?> lastError = const Value.absent(),
+  }) => BgSyncStateRow(
+    id: id ?? this.id,
+    failures: failures ?? this.failures,
+    lastFailAt: lastFailAt.present ? lastFailAt.value : this.lastFailAt,
+    lastError: lastError.present ? lastError.value : this.lastError,
+  );
+  BgSyncStateRow copyWithCompanion(BgSyncStateCompanion data) {
+    return BgSyncStateRow(
+      id: data.id.present ? data.id.value : this.id,
+      failures: data.failures.present ? data.failures.value : this.failures,
+      lastFailAt: data.lastFailAt.present
+          ? data.lastFailAt.value
+          : this.lastFailAt,
+      lastError: data.lastError.present ? data.lastError.value : this.lastError,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BgSyncStateRow(')
+          ..write('id: $id, ')
+          ..write('failures: $failures, ')
+          ..write('lastFailAt: $lastFailAt, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, failures, lastFailAt, lastError);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BgSyncStateRow &&
+          other.id == this.id &&
+          other.failures == this.failures &&
+          other.lastFailAt == this.lastFailAt &&
+          other.lastError == this.lastError);
+}
+
+class BgSyncStateCompanion extends UpdateCompanion<BgSyncStateRow> {
+  final Value<int> id;
+  final Value<int> failures;
+  final Value<DateTime?> lastFailAt;
+  final Value<String?> lastError;
+  const BgSyncStateCompanion({
+    this.id = const Value.absent(),
+    this.failures = const Value.absent(),
+    this.lastFailAt = const Value.absent(),
+    this.lastError = const Value.absent(),
+  });
+  BgSyncStateCompanion.insert({
+    this.id = const Value.absent(),
+    this.failures = const Value.absent(),
+    this.lastFailAt = const Value.absent(),
+    this.lastError = const Value.absent(),
+  });
+  static Insertable<BgSyncStateRow> custom({
+    Expression<int>? id,
+    Expression<int>? failures,
+    Expression<DateTime>? lastFailAt,
+    Expression<String>? lastError,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (failures != null) 'failures': failures,
+      if (lastFailAt != null) 'last_fail_at': lastFailAt,
+      if (lastError != null) 'last_error': lastError,
+    });
+  }
+
+  BgSyncStateCompanion copyWith({
+    Value<int>? id,
+    Value<int>? failures,
+    Value<DateTime?>? lastFailAt,
+    Value<String?>? lastError,
+  }) {
+    return BgSyncStateCompanion(
+      id: id ?? this.id,
+      failures: failures ?? this.failures,
+      lastFailAt: lastFailAt ?? this.lastFailAt,
+      lastError: lastError ?? this.lastError,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (failures.present) {
+      map['failures'] = Variable<int>(failures.value);
+    }
+    if (lastFailAt.present) {
+      map['last_fail_at'] = Variable<DateTime>(lastFailAt.value);
+    }
+    if (lastError.present) {
+      map['last_error'] = Variable<String>(lastError.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BgSyncStateCompanion(')
+          ..write('id: $id, ')
+          ..write('failures: $failures, ')
+          ..write('lastFailAt: $lastFailAt, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDb extends GeneratedDatabase {
   _$AppDb(QueryExecutor e) : super(e);
   $AppDbManager get managers => $AppDbManager(this);
@@ -2434,6 +2736,7 @@ abstract class _$AppDb extends GeneratedDatabase {
   late final $OpsTable ops = $OpsTable(this);
   late final $ServerAccountsTable serverAccounts = $ServerAccountsTable(this);
   late final $MembersTable members = $MembersTable(this);
+  late final $BgSyncStateTable bgSyncState = $BgSyncStateTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2445,6 +2748,7 @@ abstract class _$AppDb extends GeneratedDatabase {
     ops,
     serverAccounts,
     members,
+    bgSyncState,
   ];
 }
 
@@ -3733,6 +4037,192 @@ typedef $$MembersTableProcessedTableManager =
       MemberRow,
       PrefetchHooks Function()
     >;
+typedef $$BgSyncStateTableCreateCompanionBuilder =
+    BgSyncStateCompanion Function({
+      Value<int> id,
+      Value<int> failures,
+      Value<DateTime?> lastFailAt,
+      Value<String?> lastError,
+    });
+typedef $$BgSyncStateTableUpdateCompanionBuilder =
+    BgSyncStateCompanion Function({
+      Value<int> id,
+      Value<int> failures,
+      Value<DateTime?> lastFailAt,
+      Value<String?> lastError,
+    });
+
+class $$BgSyncStateTableFilterComposer
+    extends Composer<_$AppDb, $BgSyncStateTable> {
+  $$BgSyncStateTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get failures => $composableBuilder(
+    column: $table.failures,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastFailAt => $composableBuilder(
+    column: $table.lastFailAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BgSyncStateTableOrderingComposer
+    extends Composer<_$AppDb, $BgSyncStateTable> {
+  $$BgSyncStateTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get failures => $composableBuilder(
+    column: $table.failures,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastFailAt => $composableBuilder(
+    column: $table.lastFailAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BgSyncStateTableAnnotationComposer
+    extends Composer<_$AppDb, $BgSyncStateTable> {
+  $$BgSyncStateTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get failures =>
+      $composableBuilder(column: $table.failures, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastFailAt => $composableBuilder(
+    column: $table.lastFailAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastError =>
+      $composableBuilder(column: $table.lastError, builder: (column) => column);
+}
+
+class $$BgSyncStateTableTableManager
+    extends
+        RootTableManager<
+          _$AppDb,
+          $BgSyncStateTable,
+          BgSyncStateRow,
+          $$BgSyncStateTableFilterComposer,
+          $$BgSyncStateTableOrderingComposer,
+          $$BgSyncStateTableAnnotationComposer,
+          $$BgSyncStateTableCreateCompanionBuilder,
+          $$BgSyncStateTableUpdateCompanionBuilder,
+          (
+            BgSyncStateRow,
+            BaseReferences<_$AppDb, $BgSyncStateTable, BgSyncStateRow>,
+          ),
+          BgSyncStateRow,
+          PrefetchHooks Function()
+        > {
+  $$BgSyncStateTableTableManager(_$AppDb db, $BgSyncStateTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BgSyncStateTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BgSyncStateTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BgSyncStateTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> failures = const Value.absent(),
+                Value<DateTime?> lastFailAt = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => BgSyncStateCompanion(
+                id: id,
+                failures: failures,
+                lastFailAt: lastFailAt,
+                lastError: lastError,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> failures = const Value.absent(),
+                Value<DateTime?> lastFailAt = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => BgSyncStateCompanion.insert(
+                id: id,
+                failures: failures,
+                lastFailAt: lastFailAt,
+                lastError: lastError,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BgSyncStateTable, BgSyncStateRow>(table),
+                  BaseReferences<_$AppDb, $BgSyncStateTable, BgSyncStateRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BgSyncStateTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDb,
+      $BgSyncStateTable,
+      BgSyncStateRow,
+      $$BgSyncStateTableFilterComposer,
+      $$BgSyncStateTableOrderingComposer,
+      $$BgSyncStateTableAnnotationComposer,
+      $$BgSyncStateTableCreateCompanionBuilder,
+      $$BgSyncStateTableUpdateCompanionBuilder,
+      (
+        BgSyncStateRow,
+        BaseReferences<_$AppDb, $BgSyncStateTable, BgSyncStateRow>,
+      ),
+      BgSyncStateRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDbManager {
   final _$AppDb _db;
@@ -3748,4 +4238,6 @@ class $AppDbManager {
       $$ServerAccountsTableTableManager(_db, _db.serverAccounts);
   $$MembersTableTableManager get members =>
       $$MembersTableTableManager(_db, _db.members);
+  $$BgSyncStateTableTableManager get bgSyncState =>
+      $$BgSyncStateTableTableManager(_db, _db.bgSyncState);
 }

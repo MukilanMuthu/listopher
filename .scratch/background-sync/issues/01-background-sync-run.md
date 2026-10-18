@@ -4,11 +4,11 @@
 
 **Blocked by:** none
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] New drift table for back-off state; store exports read/write functions for it
-- [ ] `backgroundSync` skips (no network calls) while inside the wait
-- [ ] Waits are 15 min, 30 min, 1 h, then 1 h forever
-- [ ] Failure saves the error text and bumps the count; it never throws out of `backgroundSync`
-- [ ] Any good sync resets the count (foreground `startAutoSync` too)
-- [ ] Test through the module interface with a fake clock (`now` passed in) and a server handler: fail, fail, fail, fail → the skip windows are 15/30/60/60 min; then a good sync resets them
+- [x] New drift table for back-off state; store exports read/write functions for it
+- [x] `backgroundSync` skips (no network calls) while inside the wait
+- [x] Waits are 15 min, 30 min, 1 h, then 1 h forever
+- [x] Failure saves the error text and bumps the count; it never throws out of `backgroundSync`
+- [x] Any good sync resets the count (foreground `startAutoSync` too)
+- [x] Test through the module interface with a fake clock (`now` passed in) and a server handler: fail, fail, fail, fail → the skip windows are 15/30/60/60 min; then a good sync resets them

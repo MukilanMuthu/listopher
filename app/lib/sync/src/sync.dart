@@ -18,4 +18,6 @@ Future<void> sync(AppDb db, http.Client client) async {
     }
   }
   if (errors.isNotEmpty) throw SyncFailed(errors);
+  // good sync (any caller) ends the background back-off
+  await resetBgSyncFailures(db);
 }
