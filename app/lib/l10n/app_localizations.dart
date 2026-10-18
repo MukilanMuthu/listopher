@@ -423,6 +423,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Who bought it?'**
   String get whoBought;
+
+  /// No description provided for @scanQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR'**
+  String get scanQr;
 }
 
 class _AppLocalizationsDelegate

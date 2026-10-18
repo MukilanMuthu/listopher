@@ -61,5 +61,6 @@
   "@askedBy": {"placeholders": {"name": {"type": "String"}}},
   "boughtBy": "bought by {name}",
   "@boughtBy": {"placeholders": {"name": {"type": "String"}}},
-  "whoBought": "Who bought it?"
+  "whoBought": "Who bought it?",
+  "scanQr": "Scan QR"
 }

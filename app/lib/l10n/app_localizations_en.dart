@@ -187,4 +187,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whoBought => 'Who bought it?';
+
+  @override
+  String get scanQr => 'Scan QR';
 }

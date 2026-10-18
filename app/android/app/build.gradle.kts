@@ -45,6 +45,11 @@ kotlin {
     }
 }
 
+dependencies {
+    // Google code scanner: no camera permission needed
+    implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+}
+
 flutter {
     source = "../.."
 }
