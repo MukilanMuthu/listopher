@@ -70,10 +70,11 @@ void main() {
     await settle(tester);
     expect(find.text('Private'), findsOneWidget);
     // shared Home made straight in the store (the + flow has its own test)
-    await tester.runAsync(() async {
-      await saveServerAccount(db, url: 'http://srv', accountId: 'a1', displayName: 'A', token: 't');
-      await createSharedSpace(db, spaceId: 'home', serverUrl: 'http://srv', name: 'Home');
-    });
+    // not in runAsync: its transaction waits on timers that settle pumps
+    final made = saveServerAccount(db, url: 'http://srv', accountId: 'a1', displayName: 'A', token: 't')
+        .then((_) => createSharedSpace(db, spaceId: 'home', serverUrl: 'http://srv', name: 'Home'));
+    await settle(tester);
+    await made;
     await settle(tester);
     expect(find.text('Home'), findsOneWidget);
 

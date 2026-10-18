@@ -29,5 +29,7 @@
   "accountLocked": "Account locked, try again later",
   "serverUnreachable": "Cannot reach the server",
   "pickServer": "Pick a server",
-  "couldNotShare": "Could not create the space on the server"
+  "couldNotShare": "Could not create the space on the server",
+  "sync": "Sync",
+  "syncFailed": "Sync failed"
 }

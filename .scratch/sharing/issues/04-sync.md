@@ -4,11 +4,11 @@
 
 **Blocked by:** 03 (Share a new space)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Outbox ops are sent per space; confirmed ops get their server seq locally
-- [ ] New ops after the last known seq are pulled (looping past the 500-op page)
-- [ ] Space and item state rebuilt: confirmed ops by seq, then pending ops
-- [ ] Sync on app open and on a Sync button; failures are shown, not swallowed
-- [ ] Resending after a lost response creates no duplicates
-- [ ] Test: two phone stores, same account, one server handler — an item added on one appears on the other after sync
+- [x] Outbox ops are sent per space; confirmed ops get their server seq locally
+- [x] New ops after the last known seq are pulled (looping past the 500-op page)
+- [x] Space and item state rebuilt: confirmed ops by seq, then pending ops
+- [x] Sync on app open and on a Sync button; failures are shown, not swallowed
+- [x] Resending after a lost response creates no duplicates
+- [x] Test: two phone stores, same account, one server handler — an item added on one appears on the other after sync

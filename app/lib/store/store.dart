@@ -12,3 +12,6 @@ export 'src/watch_server_accounts.dart';
 export 'src/create_shared_space.dart';
 export 'src/outbox.dart';
 export 'src/confirm_ops.dart';
+export 'src/last_seq.dart';
+export 'src/store_ops.dart';
+export 'src/rebuild_space.dart';

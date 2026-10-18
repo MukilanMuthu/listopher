@@ -9,7 +9,7 @@ import 'push_space.dart';
 /// make a shared space on [serverUrl]: server first, then the phone, then upload.
 /// false = could not register it (no account there, or server said no / is down):
 /// nothing is created. true = space exists, even if the upload failed (ops wait in outbox).
-/// ponytail: failed upload is not retried until sync (ticket 04) exists.
+/// failed upload is retried by the next sync.
 Future<bool> shareNewSpace(
   AppDb db,
   http.Client client,

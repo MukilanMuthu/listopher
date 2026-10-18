@@ -97,4 +97,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotShare => 'Could not create the space on the server';
+
+  @override
+  String get sync => 'Sync';
+
+  @override
+  String get syncFailed => 'Sync failed';
 }
