@@ -60,12 +60,18 @@ class SpacesTab extends StatelessWidget {
               ListTile(
                 leading: Icon(space.private ? Icons.lock : Icons.group),
                 title: Text(spaceLabel(space, t)),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    InviteButton(db: db, client: client, space: space),
-                    DeleteSpaceButton(db: db, client: client, space: space),
-                  ],
+                // owner buttons: role from the cached members, so a server transfer shows
+                trailing: StreamBuilder<Set<String>>(
+                  stream: watchOwnedSpaceIds(db),
+                  builder: (context, owned) => Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (owned.data?.contains(space.id) ?? false) ...[
+                        InviteButton(db: db, client: client, space: space),
+                        DeleteSpaceButton(db: db, client: client, space: space),
+                      ],
+                    ],
+                  ),
                 ),
               ),
           ],

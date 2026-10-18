@@ -6,8 +6,7 @@ import 'package:listopher/store/store.dart';
 
 import 'start_invite.dart';
 
-/// invite button for a shared space I created (= the owner). nothing for others.
-/// ponytail: creator = owner, same limit as DeleteSpaceButton.
+/// invite button for a shared space. the caller shows it to the owner only.
 class InviteButton extends StatelessWidget {
   final AppDb db;
   final http.Client client;
@@ -16,16 +15,10 @@ class InviteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (space.private) return const SizedBox.shrink(); // never on a server
-    return FutureBuilder<bool>(
-      future: isMe(db, space.createdBy),
-      builder: (context, snap) => snap.data == true
-          ? IconButton(
-              icon: const Icon(Icons.person_add),
-              tooltip: AppLocalizations.of(context).invite,
-              onPressed: () => startInvite(context, db, client, space),
-            )
-          : const SizedBox.shrink(),
+    return IconButton(
+      icon: const Icon(Icons.person_add),
+      tooltip: AppLocalizations.of(context).invite,
+      onPressed: () => startInvite(context, db, client, space),
     );
   }
 }

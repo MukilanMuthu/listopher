@@ -107,19 +107,6 @@ void main() {
       expect(record(db, spaceId: 's1', body: const SpaceRename(name: 'x')),
           throwsStateError);
     });
-
-    test('isMe true for local id and any account id, else false', () async {
-      await createMe(db, 'Asha');
-      final me = (await watchMe(db).first)!;
-      await saveServerAccount(db,
-          url: 'http://a', accountId: 'a1', displayName: 'A', token: 't');
-      await saveServerAccount(db,
-          url: 'http://b', accountId: 'b1', displayName: 'B', token: 't');
-      expect(await isMe(db, me.id), true);
-      expect(await isMe(db, 'a1'), true);
-      expect(await isMe(db, 'b1'), true);
-      expect(await isMe(db, 'other'), false);
-    });
   });
 
   group('record', () {

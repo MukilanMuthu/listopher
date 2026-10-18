@@ -58,4 +58,26 @@ void main() {
     // offline: the cache is local, no client needed to read it
     expect((await watchMembers(b).first)[id], expected);
   });
+
+  test('owner comes from the cached member role, so it follows an ownership transfer', () async {
+    final a = await phone(alice);
+    final b = await phone(bob);
+    addTearDown(a.close);
+    addTearDown(b.close);
+    await shareNewSpace(a, client, 'http://srv', 'Team');
+    final id = (await watchSpaces(a).first).firstWhere((s) => s.name == 'Team').id;
+    await joinByLink(b, client, parseInviteLink(await makeInviteLink(a, client, id)));
+    await sync(b, client);
+    expect(await watchOwnedSpaceIds(a).first, {id}); // creator, known right after sharing
+    expect(await watchOwnedSpaceIds(b).first, isEmpty);
+
+    // server hands the space to bob
+    serverDb.execute("update members set role = 'member' where space_id = '$id' and account_id = '${alice.accountId}'");
+    serverDb.execute("update members set role = 'owner' where space_id = '$id' and account_id = '${bob.accountId}'");
+    await sync(a, client);
+    await sync(b, client);
+
+    expect(await watchOwnedSpaceIds(a).first, isEmpty);
+    expect(await watchOwnedSpaceIds(b).first, {id});
+  });
 }

@@ -6,9 +6,7 @@ import 'package:listopher/store/store.dart';
 
 import 'start_delete_space.dart';
 
-/// trash button for a shared space I created (= the owner). nothing for others.
-/// ponytail: creator = owner. after the owner's account is deleted and the server
-/// passes the space on, the new owner gets no button; the old one's tap gets a 403 message.
+/// trash button for a shared space. the caller shows it to the owner only.
 class DeleteSpaceButton extends StatelessWidget {
   final AppDb db;
   final http.Client client;
@@ -17,16 +15,10 @@ class DeleteSpaceButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (space.private) return const SizedBox.shrink(); // never on a server
-    return FutureBuilder<bool>(
-      future: isMe(db, space.createdBy),
-      builder: (context, snap) => snap.data == true
-          ? IconButton(
-              icon: const Icon(Icons.delete),
-              tooltip: AppLocalizations.of(context).deleteSpace,
-              onPressed: () => startDeleteSpace(context, db, client, space),
-            )
-          : const SizedBox.shrink(),
+    return IconButton(
+      icon: const Icon(Icons.delete),
+      tooltip: AppLocalizations.of(context).deleteSpace,
+      onPressed: () => startDeleteSpace(context, db, client, space),
     );
   }
 }

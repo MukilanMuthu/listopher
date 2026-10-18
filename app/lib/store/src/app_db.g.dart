@@ -2200,8 +2200,17 @@ class $MembersTable extends Members with TableInfo<$MembersTable, MemberRow> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
   @override
-  List<GeneratedColumn> get $columns => [spaceId, userId, displayName];
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [spaceId, userId, displayName, role];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2241,6 +2250,14 @@ class $MembersTable extends Members with TableInfo<$MembersTable, MemberRow> {
     } else if (isInserting) {
       context.missing(_displayNameMeta);
     }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_roleMeta);
+    }
     return context;
   }
 
@@ -2262,6 +2279,10 @@ class $MembersTable extends Members with TableInfo<$MembersTable, MemberRow> {
         DriftSqlType.string,
         data['${effectivePrefix}display_name'],
       )!,
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      )!,
     );
   }
 
@@ -2275,10 +2296,12 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
   final String spaceId;
   final String userId;
   final String displayName;
+  final String role;
   const MemberRow({
     required this.spaceId,
     required this.userId,
     required this.displayName,
+    required this.role,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2286,6 +2309,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
     map['space_id'] = Variable<String>(spaceId);
     map['user_id'] = Variable<String>(userId);
     map['display_name'] = Variable<String>(displayName);
+    map['role'] = Variable<String>(role);
     return map;
   }
 
@@ -2294,6 +2318,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
       spaceId: Value(spaceId),
       userId: Value(userId),
       displayName: Value(displayName),
+      role: Value(role),
     );
   }
 
@@ -2306,6 +2331,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
       spaceId: serializer.fromJson<String>(json['spaceId']),
       userId: serializer.fromJson<String>(json['userId']),
       displayName: serializer.fromJson<String>(json['displayName']),
+      role: serializer.fromJson<String>(json['role']),
     );
   }
   @override
@@ -2315,15 +2341,21 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
       'spaceId': serializer.toJson<String>(spaceId),
       'userId': serializer.toJson<String>(userId),
       'displayName': serializer.toJson<String>(displayName),
+      'role': serializer.toJson<String>(role),
     };
   }
 
-  MemberRow copyWith({String? spaceId, String? userId, String? displayName}) =>
-      MemberRow(
-        spaceId: spaceId ?? this.spaceId,
-        userId: userId ?? this.userId,
-        displayName: displayName ?? this.displayName,
-      );
+  MemberRow copyWith({
+    String? spaceId,
+    String? userId,
+    String? displayName,
+    String? role,
+  }) => MemberRow(
+    spaceId: spaceId ?? this.spaceId,
+    userId: userId ?? this.userId,
+    displayName: displayName ?? this.displayName,
+    role: role ?? this.role,
+  );
   MemberRow copyWithCompanion(MembersCompanion data) {
     return MemberRow(
       spaceId: data.spaceId.present ? data.spaceId.value : this.spaceId,
@@ -2331,6 +2363,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
       displayName: data.displayName.present
           ? data.displayName.value
           : this.displayName,
+      role: data.role.present ? data.role.value : this.role,
     );
   }
 
@@ -2339,51 +2372,59 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
     return (StringBuffer('MemberRow(')
           ..write('spaceId: $spaceId, ')
           ..write('userId: $userId, ')
-          ..write('displayName: $displayName')
+          ..write('displayName: $displayName, ')
+          ..write('role: $role')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(spaceId, userId, displayName);
+  int get hashCode => Object.hash(spaceId, userId, displayName, role);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is MemberRow &&
           other.spaceId == this.spaceId &&
           other.userId == this.userId &&
-          other.displayName == this.displayName);
+          other.displayName == this.displayName &&
+          other.role == this.role);
 }
 
 class MembersCompanion extends UpdateCompanion<MemberRow> {
   final Value<String> spaceId;
   final Value<String> userId;
   final Value<String> displayName;
+  final Value<String> role;
   final Value<int> rowid;
   const MembersCompanion({
     this.spaceId = const Value.absent(),
     this.userId = const Value.absent(),
     this.displayName = const Value.absent(),
+    this.role = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MembersCompanion.insert({
     required String spaceId,
     required String userId,
     required String displayName,
+    required String role,
     this.rowid = const Value.absent(),
   }) : spaceId = Value(spaceId),
        userId = Value(userId),
-       displayName = Value(displayName);
+       displayName = Value(displayName),
+       role = Value(role);
   static Insertable<MemberRow> custom({
     Expression<String>? spaceId,
     Expression<String>? userId,
     Expression<String>? displayName,
+    Expression<String>? role,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (spaceId != null) 'space_id': spaceId,
       if (userId != null) 'user_id': userId,
       if (displayName != null) 'display_name': displayName,
+      if (role != null) 'role': role,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2392,12 +2433,14 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
     Value<String>? spaceId,
     Value<String>? userId,
     Value<String>? displayName,
+    Value<String>? role,
     Value<int>? rowid,
   }) {
     return MembersCompanion(
       spaceId: spaceId ?? this.spaceId,
       userId: userId ?? this.userId,
       displayName: displayName ?? this.displayName,
+      role: role ?? this.role,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2414,6 +2457,9 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
     if (displayName.present) {
       map['display_name'] = Variable<String>(displayName.value);
     }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2426,6 +2472,7 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
           ..write('spaceId: $spaceId, ')
           ..write('userId: $userId, ')
           ..write('displayName: $displayName, ')
+          ..write('role: $role, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3583,12 +3630,14 @@ typedef $$MembersTableCreateCompanionBuilder = MembersCompanion Function({
   required String spaceId,
   required String userId,
   required String displayName,
+  required String role,
   Value<int> rowid,
 });
 typedef $$MembersTableUpdateCompanionBuilder = MembersCompanion Function({
   Value<String> spaceId,
   Value<String> userId,
   Value<String> displayName,
+  Value<String> role,
   Value<int> rowid,
 });
 
@@ -3612,6 +3661,11 @@ class $$MembersTableFilterComposer extends Composer<_$AppDb, $MembersTable> {
 
   ColumnFilters<String> get displayName => $composableBuilder(
     column: $table.displayName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -3638,6 +3692,11 @@ class $$MembersTableOrderingComposer extends Composer<_$AppDb, $MembersTable> {
     column: $table.displayName,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$MembersTableAnnotationComposer
@@ -3659,6 +3718,9 @@ class $$MembersTableAnnotationComposer
     column: $table.displayName,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
 }
 
 class $$MembersTableTableManager
@@ -3692,11 +3754,13 @@ class $$MembersTableTableManager
                 Value<String> spaceId = const Value.absent(),
                 Value<String> userId = const Value.absent(),
                 Value<String> displayName = const Value.absent(),
+                Value<String> role = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MembersCompanion(
                 spaceId: spaceId,
                 userId: userId,
                 displayName: displayName,
+                role: role,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -3704,11 +3768,13 @@ class $$MembersTableTableManager
                 required String spaceId,
                 required String userId,
                 required String displayName,
+                required String role,
                 Value<int> rowid = const Value.absent(),
               }) => MembersCompanion.insert(
                 spaceId: spaceId,
                 userId: userId,
                 displayName: displayName,
+                role: role,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

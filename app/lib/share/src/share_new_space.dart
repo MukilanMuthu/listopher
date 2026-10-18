@@ -29,6 +29,9 @@ Future<bool> shareNewSpace(
     return false; // server down or refused: leave no half space on the phone
   }
   await createSharedSpace(db, spaceId: spaceId, serverUrl: serverUrl, name: name);
+  // creator is the owner: cache it now so the owner buttons show before the first sync
+  await saveMembers(db, spaceId,
+      {account.accountId: (name: account.displayName, role: 'owner')});
   try {
     await pushSpace(db, client, spaceId);
   } catch (_) {
