@@ -103,4 +103,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syncFailed => 'Sync failed';
+
+  @override
+  String get deleteSpace => 'Delete space';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String deleteSpaceQuestion(String space) {
+    return 'Delete $space for everyone?';
+  }
+
+  @override
+  String get couldNotDeleteSpace => 'Could not delete the space';
 }

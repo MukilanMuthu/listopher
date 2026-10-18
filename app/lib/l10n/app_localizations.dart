@@ -279,6 +279,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sync failed'**
   String get syncFailed;
+
+  /// No description provided for @deleteSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete space'**
+  String get deleteSpace;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @deleteSpaceQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {space} for everyone?'**
+  String deleteSpaceQuestion(String space);
+
+  /// No description provided for @couldNotDeleteSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete the space'**
+  String get couldNotDeleteSpace;
 }
 
 class _AppLocalizationsDelegate

@@ -31,5 +31,10 @@
   "pickServer": "Pick a server",
   "couldNotShare": "Could not create the space on the server",
   "sync": "Sync",
-  "syncFailed": "Sync failed"
+  "syncFailed": "Sync failed",
+  "deleteSpace": "Delete space",
+  "delete": "Delete",
+  "deleteSpaceQuestion": "Delete {space} for everyone?",
+  "@deleteSpaceQuestion": {"placeholders": {"space": {"type": "String"}}},
+  "couldNotDeleteSpace": "Could not delete the space"
 }

@@ -4,9 +4,9 @@
 
 **Blocked by:** 04 (Sync)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Owner sees a delete action with a confirmation; non-owners don't
-- [ ] Deleted on the server, removed locally on the owner's phone
-- [ ] Other members' phones remove it on next sync
-- [ ] Test with two phone stores against the in-process server
+- [x] Owner sees a delete action with a confirmation; non-owners don't
+- [x] Deleted on the server, removed locally on the owner's phone
+- [x] Other members' phones remove it on next sync
+- [x] Test with two phone stores against the in-process server

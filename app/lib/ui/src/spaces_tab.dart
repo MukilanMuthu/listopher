@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:listopher/l10n/app_localizations.dart';
 import 'package:listopher/store/store.dart';
 
+import 'delete_space_button.dart';
 import 'login_screen.dart';
 import 'start_share_space.dart';
 import 'space_label.dart';
@@ -49,6 +50,7 @@ class SpacesTab extends StatelessWidget {
               ListTile(
                 leading: Icon(space.private ? Icons.lock : Icons.group),
                 title: Text(spaceLabel(space, t)),
+                trailing: DeleteSpaceButton(db: db, client: client, space: space),
               ),
           ],
         ),
