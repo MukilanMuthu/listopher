@@ -171,4 +171,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotJoin => 'Could not join the space';
+
+  @override
+  String get scanQr => 'Scan QR';
 }

@@ -1,6 +1,8 @@
 // invite and join through the Spaces tab, against the real server handler, in-process.
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -135,6 +137,55 @@ void main() {
     await pasteAndJoin(tester, 'hello');
 
     expect(find.text('Not a valid invite link'), findsOneWidget);
+    await unmount(tester);
+  });
+
+  // fake the Android scanner: it answers with `result` (null = user cancelled)
+  void fakeScanner(WidgetTester tester, String? result) {
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        const MethodChannel('listopher/scan'), (_) async => result);
+  }
+
+  testWidgets('invite dialog also shows the link as a QR code', (tester) async {
+    await openSpacesTab(tester, owner);
+    await tester.tap(find.byTooltip('Invite'));
+    await settle(tester);
+
+    expect(find.byType(QrImageView), findsOneWidget);
+    await unmount(tester);
+  });
+
+  testWidgets('scanned link joins like a pasted one', (tester) async {
+    final link = (await tester.runAsync(() => makeInviteLink(owner, client, spaceId)))!;
+    fakeScanner(tester, link);
+    await openSpacesTab(tester, joiner);
+    await tester.tap(find.text('Scan QR'));
+    await settle(tester);
+    await settle(tester);
+
+    expect(find.text('http://srv'), findsOneWidget); // login, url from the link
+    await logInAsBob(tester);
+    expect(find.text('Home'), findsOneWidget);
+    await unmount(tester);
+  });
+
+  testWidgets('scanned non-listopher QR: bad link message', (tester) async {
+    fakeScanner(tester, 'https://example.com');
+    await openSpacesTab(tester, joiner);
+    await tester.tap(find.text('Scan QR'));
+    await settle(tester);
+
+    expect(find.text('Not a valid invite link'), findsOneWidget);
+    await unmount(tester);
+  });
+
+  testWidgets('scan cancelled: nothing happens', (tester) async {
+    fakeScanner(tester, null);
+    await openSpacesTab(tester, joiner);
+    await tester.tap(find.text('Scan QR'));
+    await settle(tester);
+
+    expect(find.byType(SnackBar), findsNothing);
     await unmount(tester);
   });
 }

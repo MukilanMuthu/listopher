@@ -399,6 +399,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not join the space'**
   String get couldNotJoin;
+
+  /// No description provided for @scanQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR'**
+  String get scanQr;
 }
 
 class _AppLocalizationsDelegate

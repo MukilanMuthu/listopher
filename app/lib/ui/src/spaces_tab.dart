@@ -9,6 +9,7 @@ import 'invite_button.dart';
 import 'login_screen.dart';
 import 'server_tile.dart';
 import 'start_join.dart';
+import 'start_scan.dart';
 import 'start_share_space.dart';
 import 'space_label.dart';
 
@@ -48,6 +49,11 @@ class SpacesTab extends StatelessWidget {
               leading: const Icon(Icons.link),
               title: Text(t.joinWithLink),
               onTap: () => startJoin(context, db, client),
+            ),
+            ListTile(
+              leading: const Icon(Icons.qr_code_scanner),
+              title: Text(t.scanQr),
+              onTap: () => startScan(context, db, client),
             ),
             for (final space in snap.data ?? <SpaceRow>[])
               // ponytail: tap does nothing yet. space details / members come later.

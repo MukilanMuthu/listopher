@@ -4,9 +4,9 @@
 
 **Blocked by:** 06 (Join by invite link)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Owner can show the invite as a QR code
-- [ ] Joiner can scan from the Spaces tab on Android without a camera permission prompt
-- [ ] A scanned link runs the same join flow as a pasted one
-- [ ] Non-listopher QR codes show an error
+- [x] Owner can show the invite as a QR code
+- [x] Joiner can scan from the Spaces tab on Android without a camera permission prompt
+- [x] A scanned link runs the same join flow as a pasted one
+- [x] Non-listopher QR codes show an error

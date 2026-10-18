@@ -55,5 +55,6 @@
   "join": "Join",
   "badLink": "Not a valid invite link",
   "badInvite": "This invite no longer works",
-  "couldNotJoin": "Could not join the space"
+  "couldNotJoin": "Could not join the space",
+  "scanQr": "Scan QR"
 }
