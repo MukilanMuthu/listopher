@@ -63,4 +63,34 @@ void main() {
     expect([for (final i in await watchItems(fresh).first) i.name], ['milk']);
     await fresh.close();
   });
+
+  test('one space fails: others still restored, one error at the end, bare row is not owner', () async {
+    final old = await phone();
+    await shareNewSpace(old, client, 'http://srv', 'Home');
+    await shareNewSpace(old, client, 'http://srv', 'Work');
+    final spaces = (await watchSpaces(old).first).where((s) => !s.private).toList();
+    final home = spaces.firstWhere((s) => s.name == 'Home').id;
+    await old.close();
+
+    // pulling Home dies, everything else works
+    final homeDown = MockClient((req) async {
+      if (req.method == 'GET' && req.url.path == '/spaces/$home/ops') {
+        throw http.ClientException('down');
+      }
+      final res = await client.send(http.Request(req.method, req.url)
+        ..body = req.body
+        ..headers.addAll(req.headers));
+      return http.Response.fromStream(res);
+    });
+    final fresh = await phone();
+    await expectLater(restoreSpaces(fresh, homeDown, 'http://srv'), throwsA(isA<SyncFailed>()));
+
+    final got = {for (final s in await watchSpaces(fresh).first) s.id: s};
+    expect(got.values.where((s) => s.name == 'Work'), hasLength(1)); // restored despite Home
+    expect(got[home]!.createdBy, ''); // placeholder: nobody looks like the owner yet
+
+    await restoreSpaces(fresh, client, 'http://srv'); // retry heals
+    expect((await watchSpaces(fresh).first).where((s) => s.id == home).single.name, 'Home');
+    await fresh.close();
+  });
 }

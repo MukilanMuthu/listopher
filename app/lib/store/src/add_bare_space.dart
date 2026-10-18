@@ -17,6 +17,6 @@ Future<void> addBareSpace(
       name: '?',
       private: false,
       serverUrl: serverUrl,
-      createdBy: accountId,
+      createdBy: '', // unknown until sync: must not look like me
       createdAt: DateTime.now()));
 }

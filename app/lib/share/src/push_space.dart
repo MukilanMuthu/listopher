@@ -8,11 +8,12 @@ const _chunk = 200;
 
 /// upload a shared space's outbox and mark the answered ops confirmed.
 /// sent in chunks, each confirmed before the next: a failure keeps only the rest unsent.
+/// returns how many ops were confirmed.
 /// throws if the server cannot be reached or says no: unconfirmed ops stay in the outbox.
 /// private space throws StateError (from outbox).
-Future<void> pushSpace(AppDb db, http.Client client, String spaceId) async {
+Future<int> pushSpace(AppDb db, http.Client client, String spaceId) async {
   final ops = await outbox(db, spaceId);
-  if (ops.isEmpty) return; // nothing to send
+  if (ops.isEmpty) return 0; // nothing to send
   final space = (await watchSpaces(db).first).firstWhere((s) => s.id == spaceId);
   final url = space.serverUrl!; // outbox already refused unshared spaces
   final account =
@@ -21,4 +22,5 @@ Future<void> pushSpace(AppDb db, http.Client client, String spaceId) async {
     final part = ops.skip(i).take(_chunk).toList();
     await confirmOps(db, await pushOps(client, url, account.token, spaceId, part));
   }
+  return ops.length;
 }

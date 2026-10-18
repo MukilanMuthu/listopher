@@ -1,4 +1,5 @@
 // sync end to end: two phone dbs, same account, one real server handler, in-process.
+import 'package:drift/drift.dart' show TableUpdateQuery;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -107,7 +108,7 @@ void main() {
       await res.stream.drain<void>();
       throw http.ClientException('lost');
     });
-    await expectLater(sync(a, lossy), throwsA(isA<http.ClientException>()));
+    await expectLater(sync(a, lossy), throwsA(isA<SyncFailed>()));
     expect(await outbox(a, id), hasLength(1)); // phone still thinks it is unsent
 
     await sync(a, client);
@@ -140,6 +141,46 @@ void main() {
     expect((await watchItems(b).first).single.checked, false);
   });
 
+  test('one broken space does not block the others; one combined error', () async {
+    await sharedOnA();
+    await shareNewSpace(a, client, 'http://srv', 'Work');
+    final spaces = (await watchSpaces(a).first).where((s) => !s.private).toList();
+    final home = spaces.firstWhere((s) => s.name == 'Home').id;
+    final work = spaces.firstWhere((s) => s.name == 'Work').id;
+    await add(a, home, 'milk');
+    await add(a, work, 'tea');
+    final homeDown = MockClient((req) async {
+      if (req.method == 'POST' && req.url.path == '/spaces/$home/ops') {
+        throw http.ClientException('down');
+      }
+      return client.send(http.Request(req.method, req.url)
+            ..body = req.body
+            ..headers.addAll(req.headers))
+          .then(http.Response.fromStream);
+    });
+
+    await expectLater(sync(a, homeDown), throwsA(isA<SyncFailed>()));
+
+    expect(await outbox(a, work), isEmpty); // Work went up
+    expect(await outbox(a, home), hasLength(1)); // Home waits
+  });
+
+  test('nothing new: sync does not rebuild the space', () async {
+    final id = await sharedOnA();
+    await add(a, id, 'milk');
+    await sync(a, client);
+    var writes = 0;
+    final listen = a
+        .tableUpdates(TableUpdateQuery.onAllTables([a.spaces, a.items]))
+        .listen((_) => writes++);
+
+    await sync(a, client); // nothing to send, nothing to pull
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+    await listen.cancel();
+
+    expect(writes, 0);
+  });
+
   test('pull failing after a push leaves no hole: next sync gets missed ops', () async {
     final id = await sharedOnA();
     await sync(a, client);
@@ -154,7 +195,7 @@ void main() {
             ..headers.addAll(req.headers))
           .then(http.Response.fromStream);
     });
-    await expectLater(sync(a, noPull), throwsA(isA<http.ClientException>()));
+    await expectLater(sync(a, noPull), throwsA(isA<SyncFailed>()));
 
     await sync(a, client);
     expect(await names(a), unorderedEquals(['from A', 'from B']));

@@ -109,7 +109,7 @@ void main() {
     await unmount(tester);
   });
 
-  testWidgets('server refuses: message shown, no space made', (tester) async {
+  testWidgets('session revoked: message says log in again, no space made', (tester) async {
     await openSpacesTab(tester);
     await tester.tap(find.byType(FloatingActionButton));
     await settle(tester);
@@ -124,7 +124,7 @@ void main() {
     serverDb.execute('delete from sessions');
     await nameSpace(tester, 'Home');
 
-    expect(find.text('Could not create the space on the server'), findsOneWidget);
+    expect(find.text('Session expired, log in again'), findsOneWidget);
     expect((await db.select(db.spaces).get()).where((s) => !s.private), isEmpty);
     await unmount(tester);
   });
