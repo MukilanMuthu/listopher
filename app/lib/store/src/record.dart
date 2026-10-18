@@ -25,11 +25,21 @@ Future<void> record(
     final space = await (db.select(
       db.spaces,
     )..where((s) => s.id.equals(spaceId))).getSingleOrNull();
+    // shared space = my account id on that server. private = local id
+    var userId = me.id;
+    final url = space?.serverUrl;
+    if (url != null) {
+      final account = await (db.select(
+        db.serverAccounts,
+      )..where((a) => a.url.equals(url))).getSingleOrNull();
+      if (account == null) throw StateError('no account on $url');
+      userId = account.accountId;
+    }
     final op = Op(
       id: newId(),
       spaceId: spaceId,
       itemId: itemId,
-      userId: me.id,
+      userId: userId,
       clientTime: DateTime.now().toUtc(),
       serverSeq: null, // not synced yet
       body: body,

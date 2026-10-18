@@ -4,10 +4,10 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Store keeps zero or more server accounts, one per server url
-- [ ] Ops recorded in a space with a server url carry that server's account id as user id
-- [ ] Ops recorded in the private space carry the local user id
-- [ ] A lookup answers "is this user id me?" for both the local id and any account id
-- [ ] Store tests cover all of the above; existing tests still pass
+- [x] Store keeps zero or more server accounts, one per server url
+- [x] Ops recorded in a space with a server url carry that server's account id as user id
+- [x] Ops recorded in the private space carry the local user id
+- [x] A lookup answers "is this user id me?" for both the local id and any account id
+- [x] Store tests cover all of the above; existing tests still pass

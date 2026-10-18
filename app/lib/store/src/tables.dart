@@ -59,3 +59,15 @@ class Ops extends Table {
   IntColumn get serverSeq => integer().nullable()();
   TextColumn get json => text()(); // jsonEncode(opToJson(op))
 }
+
+/// my account on one server. one row per server url.
+@DataClassName('ServerAccountRow')
+class ServerAccounts extends Table {
+  TextColumn get url => text()();
+  TextColumn get accountId => text()(); // my user id in that server's spaces
+  TextColumn get displayName => text()();
+  TextColumn get token => text()(); // session token for api calls
+
+  @override
+  Set<Column> get primaryKey => {url};
+}

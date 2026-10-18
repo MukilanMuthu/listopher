@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:listopher/store/src/app_db.dart';
 import 'package:listopher/store/src/apply_item_op.dart';
 import 'package:listopher/store/src/apply_space_op.dart';
 import 'package:listopher/store/store.dart';
@@ -50,6 +54,71 @@ void main() {
 
     test('empty name throws', () {
       expect(createMe(db, '   '), throwsArgumentError);
+    });
+  });
+
+  group('server accounts', () {
+    // helper: a shared space row on server url (UI to create one comes later)
+    Future<void> shared(String id, String url) => db.into(db.spaces).insert(
+        SpacesCompanion.insert(
+            id: id,
+            name: 'home',
+            private: false,
+            serverUrl: Value(url),
+            createdBy: 'x',
+            createdAt: DateTime.now()));
+
+    Future<Op> lastOp() async =>
+        opFromJson(jsonDecode((await db.select(db.ops).get()).last.json));
+
+    test('one account per server url, save again replaces', () async {
+      await saveServerAccount(db,
+          url: 'http://a', accountId: 'a1', displayName: 'A', token: 't1');
+      await saveServerAccount(db,
+          url: 'http://b', accountId: 'b1', displayName: 'B', token: 't2');
+      await saveServerAccount(db,
+          url: 'http://a', accountId: 'a2', displayName: 'A', token: 't3');
+      final all = await db.select(db.serverAccounts).get();
+      expect(all.length, 2);
+      expect(all.firstWhere((a) => a.url == 'http://a').accountId, 'a2');
+    });
+
+    test('op in shared space carries that server account id', () async {
+      await createMe(db, 'Asha');
+      await saveServerAccount(db,
+          url: 'http://a', accountId: 'a1', displayName: 'A', token: 't');
+      await shared('s1', 'http://a');
+      await record(db, spaceId: 's1', body: const SpaceRename(name: 'x'));
+      expect((await lastOp()).userId, 'a1');
+    });
+
+    test('op in private space carries local user id', () async {
+      await createMe(db, 'Asha');
+      final me = (await watchMe(db).first)!;
+      await record(db,
+          spaceId: (await watchSpaces(db).first).single.id,
+          body: const SpaceRename(name: 'x'));
+      expect((await lastOp()).userId, me.id);
+    });
+
+    test('shared space without account throws', () async {
+      await createMe(db, 'Asha');
+      await shared('s1', 'http://nope');
+      expect(record(db, spaceId: 's1', body: const SpaceRename(name: 'x')),
+          throwsStateError);
+    });
+
+    test('isMe true for local id and any account id, else false', () async {
+      await createMe(db, 'Asha');
+      final me = (await watchMe(db).first)!;
+      await saveServerAccount(db,
+          url: 'http://a', accountId: 'a1', displayName: 'A', token: 't');
+      await saveServerAccount(db,
+          url: 'http://b', accountId: 'b1', displayName: 'B', token: 't');
+      expect(await isMe(db, me.id), true);
+      expect(await isMe(db, 'a1'), true);
+      expect(await isMe(db, 'b1'), true);
+      expect(await isMe(db, 'other'), false);
     });
   });
 

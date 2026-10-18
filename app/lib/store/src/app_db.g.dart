@@ -1847,6 +1847,323 @@ class OpsCompanion extends UpdateCompanion<OpRow> {
   }
 }
 
+class $ServerAccountsTable extends ServerAccounts
+    with TableInfo<$ServerAccountsTable, ServerAccountRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ServerAccountsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _urlMeta = const VerificationMeta('url');
+  @override
+  late final GeneratedColumn<String> url = GeneratedColumn<String>(
+    'url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _accountIdMeta = const VerificationMeta(
+    'accountId',
+  );
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+    'account_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayNameMeta = const VerificationMeta(
+    'displayName',
+  );
+  @override
+  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
+    'display_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tokenMeta = const VerificationMeta('token');
+  @override
+  late final GeneratedColumn<String> token = GeneratedColumn<String>(
+    'token',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [url, accountId, displayName, token];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'server_accounts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ServerAccountRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('url')) {
+      context.handle(
+        _urlMeta,
+        url.isAcceptableOrUnknown(data['url']!, _urlMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_urlMeta);
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(
+        _accountIdMeta,
+        accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('display_name')) {
+      context.handle(
+        _displayNameMeta,
+        displayName.isAcceptableOrUnknown(
+          data['display_name']!,
+          _displayNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayNameMeta);
+    }
+    if (data.containsKey('token')) {
+      context.handle(
+        _tokenMeta,
+        token.isAcceptableOrUnknown(data['token']!, _tokenMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tokenMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {url};
+  @override
+  ServerAccountRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ServerAccountRow(
+      url: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}url'],
+      )!,
+      accountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}account_id'],
+      )!,
+      displayName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_name'],
+      )!,
+      token: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}token'],
+      )!,
+    );
+  }
+
+  @override
+  $ServerAccountsTable createAlias(String alias) {
+    return $ServerAccountsTable(attachedDatabase, alias);
+  }
+}
+
+class ServerAccountRow extends DataClass
+    implements Insertable<ServerAccountRow> {
+  final String url;
+  final String accountId;
+  final String displayName;
+  final String token;
+  const ServerAccountRow({
+    required this.url,
+    required this.accountId,
+    required this.displayName,
+    required this.token,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['url'] = Variable<String>(url);
+    map['account_id'] = Variable<String>(accountId);
+    map['display_name'] = Variable<String>(displayName);
+    map['token'] = Variable<String>(token);
+    return map;
+  }
+
+  ServerAccountsCompanion toCompanion(bool nullToAbsent) {
+    return ServerAccountsCompanion(
+      url: Value(url),
+      accountId: Value(accountId),
+      displayName: Value(displayName),
+      token: Value(token),
+    );
+  }
+
+  factory ServerAccountRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ServerAccountRow(
+      url: serializer.fromJson<String>(json['url']),
+      accountId: serializer.fromJson<String>(json['accountId']),
+      displayName: serializer.fromJson<String>(json['displayName']),
+      token: serializer.fromJson<String>(json['token']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'url': serializer.toJson<String>(url),
+      'accountId': serializer.toJson<String>(accountId),
+      'displayName': serializer.toJson<String>(displayName),
+      'token': serializer.toJson<String>(token),
+    };
+  }
+
+  ServerAccountRow copyWith({
+    String? url,
+    String? accountId,
+    String? displayName,
+    String? token,
+  }) => ServerAccountRow(
+    url: url ?? this.url,
+    accountId: accountId ?? this.accountId,
+    displayName: displayName ?? this.displayName,
+    token: token ?? this.token,
+  );
+  ServerAccountRow copyWithCompanion(ServerAccountsCompanion data) {
+    return ServerAccountRow(
+      url: data.url.present ? data.url.value : this.url,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      displayName: data.displayName.present
+          ? data.displayName.value
+          : this.displayName,
+      token: data.token.present ? data.token.value : this.token,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ServerAccountRow(')
+          ..write('url: $url, ')
+          ..write('accountId: $accountId, ')
+          ..write('displayName: $displayName, ')
+          ..write('token: $token')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(url, accountId, displayName, token);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ServerAccountRow &&
+          other.url == this.url &&
+          other.accountId == this.accountId &&
+          other.displayName == this.displayName &&
+          other.token == this.token);
+}
+
+class ServerAccountsCompanion extends UpdateCompanion<ServerAccountRow> {
+  final Value<String> url;
+  final Value<String> accountId;
+  final Value<String> displayName;
+  final Value<String> token;
+  final Value<int> rowid;
+  const ServerAccountsCompanion({
+    this.url = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.displayName = const Value.absent(),
+    this.token = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ServerAccountsCompanion.insert({
+    required String url,
+    required String accountId,
+    required String displayName,
+    required String token,
+    this.rowid = const Value.absent(),
+  }) : url = Value(url),
+       accountId = Value(accountId),
+       displayName = Value(displayName),
+       token = Value(token);
+  static Insertable<ServerAccountRow> custom({
+    Expression<String>? url,
+    Expression<String>? accountId,
+    Expression<String>? displayName,
+    Expression<String>? token,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (url != null) 'url': url,
+      if (accountId != null) 'account_id': accountId,
+      if (displayName != null) 'display_name': displayName,
+      if (token != null) 'token': token,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ServerAccountsCompanion copyWith({
+    Value<String>? url,
+    Value<String>? accountId,
+    Value<String>? displayName,
+    Value<String>? token,
+    Value<int>? rowid,
+  }) {
+    return ServerAccountsCompanion(
+      url: url ?? this.url,
+      accountId: accountId ?? this.accountId,
+      displayName: displayName ?? this.displayName,
+      token: token ?? this.token,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (url.present) {
+      map['url'] = Variable<String>(url.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
+    if (displayName.present) {
+      map['display_name'] = Variable<String>(displayName.value);
+    }
+    if (token.present) {
+      map['token'] = Variable<String>(token.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ServerAccountsCompanion(')
+          ..write('url: $url, ')
+          ..write('accountId: $accountId, ')
+          ..write('displayName: $displayName, ')
+          ..write('token: $token, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDb extends GeneratedDatabase {
   _$AppDb(QueryExecutor e) : super(e);
   $AppDbManager get managers => $AppDbManager(this);
@@ -1854,6 +2171,7 @@ abstract class _$AppDb extends GeneratedDatabase {
   late final $SpacesTable spaces = $SpacesTable(this);
   late final $ItemsTable items = $ItemsTable(this);
   late final $OpsTable ops = $OpsTable(this);
+  late final $ServerAccountsTable serverAccounts = $ServerAccountsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1863,6 +2181,7 @@ abstract class _$AppDb extends GeneratedDatabase {
     spaces,
     items,
     ops,
+    serverAccounts,
   ];
 }
 
@@ -2798,6 +3117,198 @@ typedef $$OpsTableProcessedTableManager =
       OpRow,
       PrefetchHooks Function()
     >;
+typedef $$ServerAccountsTableCreateCompanionBuilder =
+    ServerAccountsCompanion Function({
+      required String url,
+      required String accountId,
+      required String displayName,
+      required String token,
+      Value<int> rowid,
+    });
+typedef $$ServerAccountsTableUpdateCompanionBuilder =
+    ServerAccountsCompanion Function({
+      Value<String> url,
+      Value<String> accountId,
+      Value<String> displayName,
+      Value<String> token,
+      Value<int> rowid,
+    });
+
+class $$ServerAccountsTableFilterComposer
+    extends Composer<_$AppDb, $ServerAccountsTable> {
+  $$ServerAccountsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get url => $composableBuilder(
+    column: $table.url,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get accountId => $composableBuilder(
+    column: $table.accountId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get token => $composableBuilder(
+    column: $table.token,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ServerAccountsTableOrderingComposer
+    extends Composer<_$AppDb, $ServerAccountsTable> {
+  $$ServerAccountsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get url => $composableBuilder(
+    column: $table.url,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get accountId => $composableBuilder(
+    column: $table.accountId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get token => $composableBuilder(
+    column: $table.token,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ServerAccountsTableAnnotationComposer
+    extends Composer<_$AppDb, $ServerAccountsTable> {
+  $$ServerAccountsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get url =>
+      $composableBuilder(column: $table.url, builder: (column) => column);
+
+  GeneratedColumn<String> get accountId =>
+      $composableBuilder(column: $table.accountId, builder: (column) => column);
+
+  GeneratedColumn<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get token =>
+      $composableBuilder(column: $table.token, builder: (column) => column);
+}
+
+class $$ServerAccountsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDb,
+          $ServerAccountsTable,
+          ServerAccountRow,
+          $$ServerAccountsTableFilterComposer,
+          $$ServerAccountsTableOrderingComposer,
+          $$ServerAccountsTableAnnotationComposer,
+          $$ServerAccountsTableCreateCompanionBuilder,
+          $$ServerAccountsTableUpdateCompanionBuilder,
+          (
+            ServerAccountRow,
+            BaseReferences<_$AppDb, $ServerAccountsTable, ServerAccountRow>,
+          ),
+          ServerAccountRow,
+          PrefetchHooks Function()
+        > {
+  $$ServerAccountsTableTableManager(_$AppDb db, $ServerAccountsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ServerAccountsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ServerAccountsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ServerAccountsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> url = const Value.absent(),
+                Value<String> accountId = const Value.absent(),
+                Value<String> displayName = const Value.absent(),
+                Value<String> token = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ServerAccountsCompanion(
+                url: url,
+                accountId: accountId,
+                displayName: displayName,
+                token: token,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String url,
+                required String accountId,
+                required String displayName,
+                required String token,
+                Value<int> rowid = const Value.absent(),
+              }) => ServerAccountsCompanion.insert(
+                url: url,
+                accountId: accountId,
+                displayName: displayName,
+                token: token,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ServerAccountsTable, ServerAccountRow>(table),
+                  BaseReferences<
+                    _$AppDb,
+                    $ServerAccountsTable,
+                    ServerAccountRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ServerAccountsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDb,
+      $ServerAccountsTable,
+      ServerAccountRow,
+      $$ServerAccountsTableFilterComposer,
+      $$ServerAccountsTableOrderingComposer,
+      $$ServerAccountsTableAnnotationComposer,
+      $$ServerAccountsTableCreateCompanionBuilder,
+      $$ServerAccountsTableUpdateCompanionBuilder,
+      (
+        ServerAccountRow,
+        BaseReferences<_$AppDb, $ServerAccountsTable, ServerAccountRow>,
+      ),
+      ServerAccountRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDbManager {
   final _$AppDb _db;
@@ -2809,4 +3320,6 @@ class $AppDbManager {
   $$ItemsTableTableManager get items =>
       $$ItemsTableTableManager(_db, _db.items);
   $$OpsTableTableManager get ops => $$OpsTableTableManager(_db, _db.ops);
+  $$ServerAccountsTableTableManager get serverAccounts =>
+      $$ServerAccountsTableTableManager(_db, _db.serverAccounts);
 }

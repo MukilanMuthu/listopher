@@ -5,7 +5,7 @@ import 'tables.dart';
 part 'app_db.g.dart';
 
 /// the phone database. pass a QueryExecutor so tests can use memory db.
-@DriftDatabase(tables: [Users, Spaces, Items, Ops])
+@DriftDatabase(tables: [Users, Spaces, Items, Ops, ServerAccounts])
 class AppDb extends _$AppDb {
   AppDb(super.e);
 
