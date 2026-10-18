@@ -22,7 +22,7 @@ void main() {
     addUser(serverDb, 'alice', 'Alice', 'pw');
     final handler = buildHandler(serverDb);
     client = MockClient((req) async {
-      final res = await handler(Request(req.method, req.url, body: req.body));
+      final res = await handler(Request(req.method, req.url, body: req.body, headers: req.headers));
       return http.Response(await res.readAsString(), res.statusCode);
     });
   });

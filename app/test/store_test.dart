@@ -260,6 +260,48 @@ void main() {
     });
   });
 
+  group('shared space', () {
+    // me + an account on srv
+    Future<void> signIn() async {
+      await createMe(db, 'Asha');
+      await saveServerAccount(db,
+          url: 'http://srv', accountId: 'acc1', displayName: 'Asha S', token: 't');
+    }
+
+    test('createSharedSpace makes a shared space owned by my account id', () async {
+      await signIn();
+      final id = newId();
+      await createSharedSpace(db, spaceId: id, serverUrl: 'http://srv', name: 'Home');
+      final space = (await watchSpaces(db).first).firstWhere((s) => s.id == id);
+      expect(space.serverUrl, 'http://srv');
+      expect(space.private, false);
+      expect(space.createdBy, 'acc1');
+    });
+
+    test('outbox holds the unsent ops, confirmOps empties it', () async {
+      await signIn();
+      final id = newId();
+      await createSharedSpace(db, spaceId: id, serverUrl: 'http://srv', name: 'Home');
+      final out = await outbox(db, id);
+      expect(out.single.body, isA<SpaceCreate>());
+      await confirmOps(db, {out.single.id: 7});
+      expect(await outbox(db, id), isEmpty);
+      final rows = await (db.select(db.ops)..where((o) => o.id.equals(out.single.id))).get();
+      expect(rows.single.serverSeq, 7);
+    });
+
+    test('private space has no outbox: it can never be pushed', () async {
+      await signIn();
+      final priv = (await watchSpaces(db).first).single.id;
+      expect(outbox(db, priv), throwsStateError);
+    });
+
+    test('createSharedSpace without an account fails', () async {
+      await createMe(db, 'Asha');
+      expect(createSharedSpace(db, spaceId: newId(), serverUrl: 'http://x', name: 'n'),
+          throwsStateError);
+    });
+  });
   group('applyItemOp', () {
     // op with given body on item "i"
     Op op(OpBody body) => Op(
@@ -283,3 +325,4 @@ void main() {
     });
   });
 }
+

@@ -9,3 +9,6 @@ export 'src/watch_me.dart';
 export 'src/is_me.dart';
 export 'src/save_server_account.dart';
 export 'src/watch_server_accounts.dart';
+export 'src/create_shared_space.dart';
+export 'src/outbox.dart';
+export 'src/confirm_ops.dart';

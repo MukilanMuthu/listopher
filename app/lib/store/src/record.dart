@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:drift/drift.dart' show InsertMode;
+import 'package:drift/drift.dart' show InsertMode, Value;
 
 import 'package:listopher_core/core.dart';
 
@@ -14,6 +14,7 @@ Future<void> record(
   required String spaceId,
   String? itemId,
   required OpBody body,
+  String? serverUrl, // only for space.create of a shared space: the server it lives on
 }) {
   return db.transaction(() async {
     // who am i. no profile = cannot blame anyone
@@ -27,7 +28,7 @@ Future<void> record(
     )..where((s) => s.id.equals(spaceId))).getSingleOrNull();
     // shared space = my account id on that server. private = local id
     var userId = me.id;
-    final url = space?.serverUrl;
+    final url = space?.serverUrl ?? serverUrl;
     if (url != null) {
       final account = await (db.select(
         db.serverAccounts,
@@ -60,7 +61,11 @@ Future<void> record(
     // space row. item ops skip it: rewriting same row wakes every watchSpaces listener
     final newSpace = itemId == null ? applySpaceOp(space, op) : null;
     if (newSpace != null) {
-      await db.into(db.spaces).insert(newSpace, mode: InsertMode.insertOrReplace);
+      // new shared space remembers its server
+      await db
+          .into(db.spaces)
+          .insert(newSpace.copyWith(serverUrl: Value(newSpace.serverUrl ?? serverUrl)),
+              mode: InsertMode.insertOrReplace);
     }
 
     // item row

@@ -4,10 +4,10 @@
 
 **Blocked by:** 02 (Log in to a server)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Spaces tab + asks which server (login if none) and a name
-- [ ] Space exists locally with its server url set and on the server with the user as owner
-- [ ] The space.create op is uploaded and gets a server seq
-- [ ] Private space can never be shared
-- [ ] Tested end-to-end against the in-process server
+- [x] Spaces tab + asks which server (login if none) and a name
+- [x] Space exists locally with its server url set and on the server with the user as owner
+- [x] The space.create op is uploaded and gets a server seq
+- [x] Private space can never be shared
+- [x] Tested end-to-end against the in-process server

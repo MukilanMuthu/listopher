@@ -255,6 +255,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cannot reach the server'**
   String get serverUnreachable;
+
+  /// No description provided for @pickServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a server'**
+  String get pickServer;
+
+  /// No description provided for @couldNotShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not create the space on the server'**
+  String get couldNotShare;
 }
 
 class _AppLocalizationsDelegate

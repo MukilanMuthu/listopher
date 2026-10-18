@@ -91,4 +91,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serverUnreachable => 'Cannot reach the server';
+
+  @override
+  String get pickServer => 'Pick a server';
+
+  @override
+  String get couldNotShare => 'Could not create the space on the server';
 }

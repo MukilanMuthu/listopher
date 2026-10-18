@@ -27,5 +27,7 @@
   "@signedInTo": {"placeholders": {"server": {"type": "String"}}},
   "wrongCredentials": "Wrong username or password",
   "accountLocked": "Account locked, try again later",
-  "serverUnreachable": "Cannot reach the server"
+  "serverUnreachable": "Cannot reach the server",
+  "pickServer": "Pick a server",
+  "couldNotShare": "Could not create the space on the server"
 }

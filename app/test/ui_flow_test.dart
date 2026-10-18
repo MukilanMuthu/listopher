@@ -69,11 +69,11 @@ void main() {
     await tester.tap(find.text('Spaces'));
     await settle(tester);
     expect(find.text('Private'), findsOneWidget);
-    await tester.tap(find.byType(FloatingActionButton));
-    await settle(tester);
-    await tester.enterText(find.byType(TextField), 'Home');
-    await tester.pump();
-    await tester.tap(find.text('Create'));
+    // shared Home made straight in the store (the + flow has its own test)
+    await tester.runAsync(() async {
+      await saveServerAccount(db, url: 'http://srv', accountId: 'a1', displayName: 'A', token: 't');
+      await createSharedSpace(db, spaceId: 'home', serverUrl: 'http://srv', name: 'Home');
+    });
     await settle(tester);
     expect(find.text('Home'), findsOneWidget);
 
