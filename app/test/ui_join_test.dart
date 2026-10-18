@@ -179,6 +179,18 @@ void main() {
     await unmount(tester);
   });
 
+  testWidgets('scanner fails: message says paste the link instead', (tester) async {
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        const MethodChannel('listopher/scan'),
+        (_) async => throw PlatformException(code: 'scan_failed'));
+    await openSpacesTab(tester, joiner);
+    await tester.tap(find.text('Scan QR'));
+    await settle(tester);
+
+    expect(find.text('Scanner unavailable — paste the link instead'), findsOneWidget);
+    await unmount(tester);
+  });
+
   testWidgets('scan cancelled: nothing happens', (tester) async {
     fakeScanner(tester, null);
     await openSpacesTab(tester, joiner);

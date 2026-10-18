@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart' show BooleanExpressionOperators, innerJoin;
+import 'package:drift/drift.dart' show innerJoin;
 
 import 'app_db.dart';
 

@@ -5,3 +5,4 @@ export 'src/parse_invite_link.dart';
 export 'src/make_invite_link.dart';
 export 'src/join_by_link.dart';
 export 'src/scan_qr.dart';
+export 'src/scanner_unavailable.dart';
