@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:listopher/l10n/app_localizations.dart';
 import 'package:listopher/store/store.dart';
@@ -10,7 +11,8 @@ import 'name_prompt_screen.dart';
 /// root widget. shows name prompt until a "me" user exists, then the home screen.
 class ListopherApp extends StatelessWidget {
   final AppDb db;
-  const ListopherApp({super.key, required this.db});
+  final http.Client client; // for server calls. tests pass one wired to the real handler
+  const ListopherApp({super.key, required this.db, required this.client});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class ListopherApp extends StatelessWidget {
           }
           final me = snap.data;
           if (me == null) return NamePromptScreen(db: db);
-          return HomeScreen(db: db, me: me);
+          return HomeScreen(db: db, me: me, client: client);
         },
       ),
     );

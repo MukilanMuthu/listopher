@@ -201,6 +201,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not a number'**
   String get invalidQuantity;
+
+  /// No description provided for @logInToServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in to server'**
+  String get logInToServer;
+
+  /// No description provided for @serverUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Server address'**
+  String get serverUrl;
+
+  /// No description provided for @username.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get username;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @logIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in'**
+  String get logIn;
+
+  /// No description provided for @signedInTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in to {server}'**
+  String signedInTo(String server);
+
+  /// No description provided for @wrongCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong username or password'**
+  String get wrongCredentials;
+
+  /// No description provided for @accountLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Account locked, try again later'**
+  String get accountLocked;
+
+  /// No description provided for @serverUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot reach the server'**
+  String get serverUnreachable;
 }
 
 class _AppLocalizationsDelegate

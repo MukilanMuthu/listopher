@@ -1,6 +1,8 @@
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:listopher/store/store.dart';
 import 'package:listopher/ui/ui.dart';
 
@@ -23,7 +25,7 @@ void main() {
   }
 
   testWidgets('name -> add items -> check -> spaces -> picker', (tester) async {
-    await tester.pumpWidget(ListopherApp(db: db));
+    await tester.pumpWidget(ListopherApp(db: db, client: MockClient((_) async => http.Response('', 500))));
     await settle(tester);
 
     // name prompt: save is off while blank

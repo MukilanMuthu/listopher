@@ -62,4 +62,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalidQuantity => 'Not a number';
+
+  @override
+  String get logInToServer => 'Log in to server';
+
+  @override
+  String get serverUrl => 'Server address';
+
+  @override
+  String get username => 'Username';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get logIn => 'Log in';
+
+  @override
+  String signedInTo(String server) {
+    return 'Signed in to $server';
+  }
+
+  @override
+  String get wrongCredentials => 'Wrong username or password';
+
+  @override
+  String get accountLocked => 'Account locked, try again later';
+
+  @override
+  String get serverUnreachable => 'Cannot reach the server';
 }

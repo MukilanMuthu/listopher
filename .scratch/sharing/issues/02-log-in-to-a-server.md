@@ -4,10 +4,10 @@
 
 **Blocked by:** 01 (Me per server (prefactor))
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Login screen: server url, username, password
-- [ ] Success saves the server account and shows 'signed in to <server>'
-- [ ] 401 shows a 'wrong username or password' message; 429 shows a 'locked, try later' message; unreachable server shows a network error
-- [ ] All strings come from the localization file
-- [ ] Tested against the real server handler in-process (no mocks)
+- [x] Login screen: server url, username, password
+- [x] Success saves the server account and shows 'signed in to <server>'
+- [x] 401 shows a 'wrong username or password' message; 429 shows a 'locked, try later' message; unreachable server shows a network error
+- [x] All strings come from the localization file
+- [x] Tested against the real server handler in-process (no mocks)

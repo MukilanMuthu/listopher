@@ -17,5 +17,15 @@
   "itemName": "Item name",
   "quantity": "Quantity",
   "unit": "Unit",
-  "invalidQuantity": "Not a number"
+  "invalidQuantity": "Not a number",
+  "logInToServer": "Log in to server",
+  "serverUrl": "Server address",
+  "username": "Username",
+  "password": "Password",
+  "logIn": "Log in",
+  "signedInTo": "Signed in to {server}",
+  "@signedInTo": {"placeholders": {"server": {"type": "String"}}},
+  "wrongCredentials": "Wrong username or password",
+  "accountLocked": "Account locked, try again later",
+  "serverUnreachable": "Cannot reach the server"
 }

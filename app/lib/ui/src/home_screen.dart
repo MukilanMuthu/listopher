@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:listopher/l10n/app_localizations.dart';
 import 'package:listopher/store/store.dart';
@@ -10,7 +11,8 @@ import 'spaces_tab.dart';
 class HomeScreen extends StatelessWidget {
   final AppDb db;
   final UserRow me;
-  const HomeScreen({super.key, required this.db, required this.me});
+  final http.Client client;
+  const HomeScreen({super.key, required this.db, required this.me, required this.client});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class HomeScreen extends StatelessWidget {
           title: Text(t.appName),
           bottom: TabBar(tabs: [Tab(text: t.itemsTab), Tab(text: t.spacesTab)]),
         ),
-        body: TabBarView(children: [ItemsTab(db: db, me: me), SpacesTab(db: db)]),
+        body: TabBarView(children: [ItemsTab(db: db, me: me), SpacesTab(db: db, client: client)]),
       ),
     );
   }

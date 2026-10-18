@@ -1,0 +1,111 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:listopher/l10n/app_localizations.dart';
+import 'package:listopher/net/net.dart';
+import 'package:listopher/store/store.dart';
+
+/// log in to a self-hosted server. ok = save account and close.
+class LoginScreen extends StatefulWidget {
+  final AppDb db;
+  final http.Client client;
+  const LoginScreen({super.key, required this.db, required this.client});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _url = TextEditingController();
+  final _user = TextEditingController();
+  final _password = TextEditingController();
+  LoginFailure? _error; // last failure, shown under the fields
+  bool _busy = false; // request in flight: button off
+
+  @override
+  void dispose() {
+    _url.dispose();
+    _user.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  /// ask server. ok = save + close. fail = show why.
+  Future<void> _submit() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final url = _url.text.trim();
+    final result = await login(widget.client, url, _user.text.trim(), _password.text);
+    switch (result) {
+      case LoginOk():
+        await saveServerAccount(
+          widget.db,
+          url: url,
+          accountId: result.accountId,
+          displayName: result.displayName,
+          token: result.token,
+        );
+        if (mounted) Navigator.of(context).pop();
+      case LoginFailed():
+        if (mounted) {
+          setState(() {
+            _busy = false;
+            _error = result.reason;
+          });
+        }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    // all three filled = button on
+    final ready = _url.text.trim().isNotEmpty &&
+        _user.text.trim().isNotEmpty &&
+        _password.text.isNotEmpty;
+    return Scaffold(
+      appBar: AppBar(title: Text(t.logInToServer)),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: _url,
+              keyboardType: TextInputType.url,
+              decoration: InputDecoration(labelText: t.serverUrl),
+              onChanged: (_) => setState(() {}),
+            ),
+            TextField(
+              controller: _user,
+              decoration: InputDecoration(labelText: t.username),
+              onChanged: (_) => setState(() {}),
+            ),
+            TextField(
+              controller: _password,
+              obscureText: true,
+              decoration: InputDecoration(labelText: t.password),
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 16),
+            if (_error != null)
+              Text(
+                switch (_error!) {
+                  LoginFailure.wrongCredentials => t.wrongCredentials,
+                  LoginFailure.locked => t.accountLocked,
+                  LoginFailure.unreachable => t.serverUnreachable,
+                },
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            const SizedBox(height: 16),
+            FilledButton(
+              onPressed: ready && !_busy ? _submit : null,
+              child: Text(t.logIn),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
