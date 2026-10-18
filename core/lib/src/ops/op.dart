@@ -100,15 +100,12 @@ class ItemUpdate extends OpBody {
   });
 }
 
-/// item.check — ticked off. checker = op.userId.
+/// item.check — ticked off. checker = op.userId = buyer.
 class ItemCheck extends OpBody {
-  /// who bought it. usually checker, can be other member ("ravi bought, i tick").
-  final String fulfilledBy;
-
-  const ItemCheck({required this.fulfilledBy});
+  const ItemCheck();
 }
 
-/// item.uncheck — tick removed. clears checker + fulfiller.
+/// item.uncheck — tick removed. clears checker.
 class ItemUncheck extends OpBody {
   const ItemUncheck();
 }

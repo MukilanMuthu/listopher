@@ -43,7 +43,6 @@ class Items extends Table {
   BoolColumn get checked => boolean().withDefault(const Constant(false))();
   TextColumn get checkedBy => text().nullable()();
   DateTimeColumn get checkedAt => dateTime().nullable()();
-  TextColumn get fulfilledBy => text().nullable()(); // who bought it
   BoolColumn get deleted => boolean().withDefault(const Constant(false))();
 
   @override

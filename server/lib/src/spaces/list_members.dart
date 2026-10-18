@@ -1,6 +1,6 @@
 import 'package:sqlite3/sqlite3.dart';
 
-// members of space: names for blame + buyer picker.
+// members of space: names for blame.
 List<Map<String, Object?>> listMembers(Database db, String spaceId) => [
       for (final r in db.select(
         'SELECT a.id, a.display_name, m.role FROM members m '

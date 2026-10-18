@@ -23,7 +23,7 @@ Future<void> syncSpace(AppDb db, http.Client client, SpaceRow space) async {
       after = page.last.serverSeq!;
       changed = true;
     }
-    // names for blame and the buyer picker; kept locally so they work offline
+    // names for blame; kept locally so they work offline
     await saveMembers(db, space.id, await listMembers(client, url, account.token, space.id));
   } on SpaceGone {
     await forgetSpace(db, space.id); // unsent ops die with the space

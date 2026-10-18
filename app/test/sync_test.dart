@@ -130,7 +130,7 @@ void main() {
     await sync(b, client);
 
     // B checks and syncs; A unchecks offline after that
-    await record(b, spaceId: id, itemId: item, body: ItemCheck(fulfilledBy: accountId));
+    await record(b, spaceId: id, itemId: item, body: ItemCheck());
     await sync(b, client);
     await record(a, spaceId: id, itemId: item, body: const ItemUncheck());
     expect((await watchItems(a).first).single.checked, false); // visible at once

@@ -186,9 +186,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get whoBought => 'Who bought it?';
-
-  @override
   String get scanQr => 'Scan QR';
 
   @override
@@ -205,4 +202,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get scannerUnavailable =>
       'Scanner unavailable — paste the link instead';
+
+  @override
+  String get somethingWentWrong => 'Something went wrong';
 }

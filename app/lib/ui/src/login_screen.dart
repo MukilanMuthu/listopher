@@ -25,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _user = TextEditingController();
   final _password = TextEditingController();
   LoginFailure? _error; // last failure, shown under the fields
+  bool _saveFailed = false; // account could not be saved on the phone
   bool _busy = false; // request in flight: button off
 
   @override
@@ -42,18 +43,30 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _busy = true;
       _error = null;
+      _saveFailed = false;
     });
     final url = normalizeServerUrl(_url.text); // stored spelling, matches parsed invite links
     final result = await login(widget.client, url, _user.text.trim(), _password.text);
     switch (result) {
       case LoginOk():
-        await saveServerAccount(
-          widget.db,
-          url: url,
-          accountId: result.accountId,
-          displayName: result.displayName,
-          token: result.token,
-        );
+        try {
+          await saveServerAccount(
+            widget.db,
+            url: url,
+            accountId: result.accountId,
+            displayName: result.displayName,
+            token: result.token,
+          );
+        } catch (_) {
+          // login worked but the phone could not save it: stay, say so, try again
+          if (mounted) {
+            setState(() {
+              _busy = false;
+              _saveFailed = true;
+            });
+          }
+          return;
+        }
         // bring back shared spaces from an earlier install
         try {
           await restoreSpaces(widget.db, widget.client, url);
@@ -113,6 +126,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
+            if (_saveFailed)
+              Text(t.somethingWentWrong,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error)),
             const SizedBox(height: 16),
             FilledButton(
               onPressed: ready && !_busy ? _submit : null,

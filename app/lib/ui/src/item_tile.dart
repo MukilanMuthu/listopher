@@ -6,7 +6,6 @@ import 'package:listopher/store/store.dart';
 import 'package:listopher/l10n/app_localizations.dart';
 
 import 'format_quantity.dart';
-import 'show_buyer_picker.dart';
 import 'show_item_dialog.dart';
 
 /// one item row: checkbox, name, "qty unit · space", "asked by X · bought by Y".
@@ -28,23 +27,11 @@ class ItemTile extends StatelessWidget {
     required this.spaceLabel,
   });
 
-  // tick = check, untick = uncheck. shared space asks who bought it (me first).
-  Future<void> _toggle(BuildContext context) async {
-    final body = item.checked ? const ItemUncheck() : await _check(context);
-    if (body == null) return; // picker cancelled
-    await record(db, spaceId: item.spaceId, itemId: item.id, body: body);
-  }
-
-  // the check op: private = me bought it, shared = pick the buyer. null = cancelled
-  Future<ItemCheck?> _check(BuildContext context) async {
-    final myId = await userIdIn(db, space, me);
-    if (space.private) return ItemCheck(fulfilledBy: myId);
-    if (!context.mounted) return null;
-    // me first (default), then the other members
-    final buyer = await showBuyerPicker(
-        context, {myId: members[myId] ?? me.displayName, ...members});
-    return buyer == null ? null : ItemCheck(fulfilledBy: buyer);
-  }
+  // tick = check (checker is the buyer), untick = uncheck. no questions asked.
+  Future<void> _toggle() => record(db,
+      spaceId: item.spaceId,
+      itemId: item.id,
+      body: item.checked ? const ItemUncheck() : const ItemCheck());
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +40,7 @@ class ItemTile extends StatelessWidget {
     String name(String id) => memberName(id, space, me, members, t.deletedUser);
     final blame = [
       t.askedBy(name(item.requestedBy)),
-      if (item.fulfilledBy != null) t.boughtBy(name(item.fulfilledBy!)),
+      if (item.checkedBy != null) t.boughtBy(name(item.checkedBy!)),
     ].join(' · ');
     // "1.5 kg", "1", "kg" or nothing
     final amount = [
@@ -74,7 +61,7 @@ class ItemTile extends StatelessWidget {
       child: ListTile(
         leading: Checkbox(
           value: item.checked,
-          onChanged: (_) => _toggle(context),
+          onChanged: (_) => _toggle(),
         ),
         title: Text(
           item.name,

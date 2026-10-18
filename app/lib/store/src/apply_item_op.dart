@@ -35,14 +35,12 @@ ItemRow? applyItemOp(ItemRow? current, Op op) {
         checked: true,
         checkedBy: Value(op.userId),
         checkedAt: Value(op.clientTime),
-        fulfilledBy: Value(body.fulfilledBy),
       ),
     // uncheck clears all check fields
     ItemUncheck() => current.copyWith(
         checked: false,
         checkedBy: const Value(null),
         checkedAt: const Value(null),
-        fulfilledBy: const Value(null),
       ),
     // soft delete: row stays
     ItemDelete() => current.copyWith(deleted: true),

@@ -30,7 +30,7 @@ void main() {
   test('item.add rice 1.5 kg', () => _roundTrip(const ItemAdd(name: 'அரிசி', quantity: 1.5, unit: 'kg', note: null, requestedBy: 'u-mum')));
   test('item.add milk, no qty no unit', () => _roundTrip(const ItemAdd(name: 'milk', quantity: null, unit: null, note: null, requestedBy: 'u-asha')));
   test('item.update', () => _roundTrip(const ItemUpdate(name: 'soap', quantity: 1, unit: null, note: 'lavender')));
-  test('item.check', () => _roundTrip(const ItemCheck(fulfilledBy: 'u-ravi')));
+  test('item.check', () => _roundTrip(const ItemCheck()));
   test('item.uncheck', () => _roundTrip(const ItemUncheck()));
   test('item.delete', () => _roundTrip(const ItemDelete()));
 

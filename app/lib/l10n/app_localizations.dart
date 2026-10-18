@@ -418,12 +418,6 @@ abstract class AppLocalizations {
   /// **'bought by {name}'**
   String boughtBy(String name);
 
-  /// No description provided for @whoBought.
-  ///
-  /// In en, this message translates to:
-  /// **'Who bought it?'**
-  String get whoBought;
-
   /// No description provided for @scanQr.
   ///
   /// In en, this message translates to:
@@ -453,6 +447,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scanner unavailable — paste the link instead'**
   String get scannerUnavailable;
+
+  /// No description provided for @somethingWentWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get somethingWentWrong;
 }
 
 class _AppLocalizationsDelegate

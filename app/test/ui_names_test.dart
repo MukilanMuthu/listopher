@@ -1,4 +1,4 @@
-// names on item rows and the buyer picker. two phones, real server handler, in-process.
+// names on item rows. two phones, real server handler, in-process.
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -81,7 +81,7 @@ void main() {
     await b.close();
   });
 
-  testWidgets('shared row shows who asked; checking asks who bought, default me',
+  testWidgets('shared row shows who asked; checking makes me the buyer at once',
       (tester) async {
     await tester.pumpWidget(ListopherApp(db: b, client: client));
     await settle(tester);
@@ -89,12 +89,7 @@ void main() {
 
     await tester.tap(find.byType(Checkbox));
     await settle(tester);
-    expect(find.text('Who bought it?'), findsOneWidget);
-    // me (Bob) is first in the list, then the others
-    expect(tester.getTopLeft(find.text('Bob')).dy, lessThan(tester.getTopLeft(find.text('Alice')).dy));
-    await tester.tap(find.text('Alice'));
-    await settle(tester);
-    expect(find.text('asked by Alice · bought by Alice'), findsOneWidget);
+    expect(find.text('asked by Alice · bought by Bob'), findsOneWidget);
     await unmount(tester);
   });
 
@@ -115,7 +110,6 @@ void main() {
     await tester.tap(find.descendant(
         of: find.widgetWithText(ListTile, 'eggs'), matching: find.byType(Checkbox)));
     await settle(tester);
-    expect(find.text('Who bought it?'), findsNothing);
     expect(find.text('asked by Bob · bought by Bob'), findsOneWidget);
     await unmount(tester);
   });

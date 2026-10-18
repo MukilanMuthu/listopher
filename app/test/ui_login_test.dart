@@ -139,6 +139,23 @@ void main() {
     await unmount(tester);
   });
 
+  testWidgets('login ok but saving fails: error shown, stays on the screen', (tester) async {
+    // the phone refuses to store the account
+    await db.customStatement(
+        "CREATE TRIGGER no_save BEFORE INSERT ON server_accounts BEGIN SELECT RAISE(ABORT, 'boom'); END");
+    await tester.pumpWidget(ListopherApp(db: db, client: client));
+    await settle(tester);
+    await tester.tap(find.text('Spaces'));
+    await settle(tester);
+
+    await logIn(tester, 'alice', 'pw');
+
+    expect(find.text('Something went wrong'), findsOneWidget);
+    expect(find.text('Log in to server'), findsWidgets); // still on the login screen
+    expect(find.widgetWithText(FilledButton, 'Log in'), findsOneWidget);
+    await unmount(tester);
+  });
+
   testWidgets('dead server shows network error', (tester) async {
     final down = MockClient((_) async => throw http.ClientException('down'));
     await tester.pumpWidget(ListopherApp(db: db, client: down));

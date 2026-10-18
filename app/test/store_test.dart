@@ -118,19 +118,18 @@ void main() {
           throwsStateError);
     });
 
-    test('check keeps checker and fulfiller apart', () async {
+    test('check records checker as buyer', () async {
       await createMe(db, 'Asha');
       final me = (await watchMe(db).first)!;
       final s = await seed();
       await record(db,
           spaceId: s.space,
           itemId: s.item,
-          body: const ItemCheck(fulfilledBy: 'ravi'));
+          body: const ItemCheck());
       final item = (await watchItems(db).first).single;
       expect(item.name, 'rice');
       expect(item.checked, true);
       expect(item.checkedBy, me.id);
-      expect(item.fulfilledBy, 'ravi');
     });
 
     test('uncheck clears check fields', () async {
@@ -139,14 +138,13 @@ void main() {
       await record(db,
           spaceId: s.space,
           itemId: s.item,
-          body: const ItemCheck(fulfilledBy: 'ravi'));
+          body: const ItemCheck());
       await record(db,
           spaceId: s.space, itemId: s.item, body: const ItemUncheck());
       final item = (await watchItems(db).first).single;
       expect(item.checked, false);
       expect(item.checkedBy, isNull);
       expect(item.checkedAt, isNull);
-      expect(item.fulfilledBy, isNull);
     });
 
     test('update with null unit clears unit', () async {
@@ -303,7 +301,7 @@ void main() {
     test('non-add ops on null are ignored', () {
       for (final b in <OpBody>[
         const ItemUpdate(name: 'a', quantity: null, unit: null, note: null),
-        const ItemCheck(fulfilledBy: 'u'),
+        const ItemCheck(),
         const ItemUncheck(),
         const ItemDelete(),
       ]) {

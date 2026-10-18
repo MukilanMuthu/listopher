@@ -43,7 +43,7 @@ Accounts must survive a reinstall: a user who reinstalls logs in again and gets 
 | `DELETE /spaces/:id` | owner | Delete the space with all its ops and members. Members' phones get 404 on the next sync and remove it locally. |
 | `POST /spaces/:id/invite` | owner | New invite token. Replaces the old one, so old QR codes stop working. |
 | `POST /spaces/:id/join {invite}` | authed | Join as a member if the invite matches, else 403. Joining twice is a no-op. |
-| `GET /spaces/:id/members` | member | Returns `[{user_id, display_name, role}]`, the names for blame and the buyer picker |
+| `GET /spaces/:id/members` | member | Returns `[{user_id, display_name, role}]`, the names for blame |
 | `POST /spaces/:id/ops [op…]` | member | Append ops and return `{op_id: server_seq}` |
 | `GET /spaces/:id/ops?after=N` | member | Ops with `server_seq > N`, in order. Max 500 per call; the client loops. |
 

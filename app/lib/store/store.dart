@@ -23,3 +23,4 @@ export 'src/watch_members.dart';
 export 'src/user_id_in.dart';
 export 'src/unsent_count.dart';
 export 'src/watch_owned_space_ids.dart';
+export 'src/watch_unsent_count.dart';

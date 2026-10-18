@@ -81,6 +81,9 @@ void main() {
     // items tab: two spaces, FAB shows picker
     await tester.tap(find.text('Items'));
     await settle(tester);
+    // autosync saw the new shared space, the fake server said 500: wait out the snackbar over the FAB
+    await tester.pump(const Duration(seconds: 6));
+    await tester.pump(const Duration(seconds: 1));
     await tester.tap(find.byType(FloatingActionButton));
     await settle(tester);
     expect(find.text('Pick a space'), findsOneWidget);

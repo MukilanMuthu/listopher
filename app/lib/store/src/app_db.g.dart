@@ -862,17 +862,6 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, ItemRow> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _fulfilledByMeta = const VerificationMeta(
-    'fulfilledBy',
-  );
-  @override
-  late final GeneratedColumn<String> fulfilledBy = GeneratedColumn<String>(
-    'fulfilled_by',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
   static const VerificationMeta _deletedMeta = const VerificationMeta(
     'deleted',
   );
@@ -901,7 +890,6 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, ItemRow> {
     checked,
     checkedBy,
     checkedAt,
-    fulfilledBy,
     deleted,
   ];
   @override
@@ -995,15 +983,6 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, ItemRow> {
         checkedAt.isAcceptableOrUnknown(data['checked_at']!, _checkedAtMeta),
       );
     }
-    if (data.containsKey('fulfilled_by')) {
-      context.handle(
-        _fulfilledByMeta,
-        fulfilledBy.isAcceptableOrUnknown(
-          data['fulfilled_by']!,
-          _fulfilledByMeta,
-        ),
-      );
-    }
     if (data.containsKey('deleted')) {
       context.handle(
         _deletedMeta,
@@ -1063,10 +1042,6 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, ItemRow> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}checked_at'],
       ),
-      fulfilledBy: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}fulfilled_by'],
-      ),
       deleted: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}deleted'],
@@ -1092,7 +1067,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
   final bool checked;
   final String? checkedBy;
   final DateTime? checkedAt;
-  final String? fulfilledBy;
   final bool deleted;
   const ItemRow({
     required this.id,
@@ -1106,7 +1080,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
     required this.checked,
     this.checkedBy,
     this.checkedAt,
-    this.fulfilledBy,
     required this.deleted,
   });
   @override
@@ -1133,9 +1106,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
     if (!nullToAbsent || checkedAt != null) {
       map['checked_at'] = Variable<DateTime>(checkedAt);
     }
-    if (!nullToAbsent || fulfilledBy != null) {
-      map['fulfilled_by'] = Variable<String>(fulfilledBy);
-    }
     map['deleted'] = Variable<bool>(deleted);
     return map;
   }
@@ -1159,9 +1129,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
       checkedAt: checkedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(checkedAt),
-      fulfilledBy: fulfilledBy == null && nullToAbsent
-          ? const Value.absent()
-          : Value(fulfilledBy),
       deleted: Value(deleted),
     );
   }
@@ -1183,7 +1150,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
       checked: serializer.fromJson<bool>(json['checked']),
       checkedBy: serializer.fromJson<String?>(json['checkedBy']),
       checkedAt: serializer.fromJson<DateTime?>(json['checkedAt']),
-      fulfilledBy: serializer.fromJson<String?>(json['fulfilledBy']),
       deleted: serializer.fromJson<bool>(json['deleted']),
     );
   }
@@ -1202,7 +1168,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
       'checked': serializer.toJson<bool>(checked),
       'checkedBy': serializer.toJson<String?>(checkedBy),
       'checkedAt': serializer.toJson<DateTime?>(checkedAt),
-      'fulfilledBy': serializer.toJson<String?>(fulfilledBy),
       'deleted': serializer.toJson<bool>(deleted),
     };
   }
@@ -1219,7 +1184,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
     bool? checked,
     Value<String?> checkedBy = const Value.absent(),
     Value<DateTime?> checkedAt = const Value.absent(),
-    Value<String?> fulfilledBy = const Value.absent(),
     bool? deleted,
   }) => ItemRow(
     id: id ?? this.id,
@@ -1233,7 +1197,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
     checked: checked ?? this.checked,
     checkedBy: checkedBy.present ? checkedBy.value : this.checkedBy,
     checkedAt: checkedAt.present ? checkedAt.value : this.checkedAt,
-    fulfilledBy: fulfilledBy.present ? fulfilledBy.value : this.fulfilledBy,
     deleted: deleted ?? this.deleted,
   );
   ItemRow copyWithCompanion(ItemsCompanion data) {
@@ -1253,9 +1216,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
       checked: data.checked.present ? data.checked.value : this.checked,
       checkedBy: data.checkedBy.present ? data.checkedBy.value : this.checkedBy,
       checkedAt: data.checkedAt.present ? data.checkedAt.value : this.checkedAt,
-      fulfilledBy: data.fulfilledBy.present
-          ? data.fulfilledBy.value
-          : this.fulfilledBy,
       deleted: data.deleted.present ? data.deleted.value : this.deleted,
     );
   }
@@ -1274,7 +1234,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
           ..write('checked: $checked, ')
           ..write('checkedBy: $checkedBy, ')
           ..write('checkedAt: $checkedAt, ')
-          ..write('fulfilledBy: $fulfilledBy, ')
           ..write('deleted: $deleted')
           ..write(')'))
         .toString();
@@ -1293,7 +1252,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
     checked,
     checkedBy,
     checkedAt,
-    fulfilledBy,
     deleted,
   );
   @override
@@ -1311,7 +1269,6 @@ class ItemRow extends DataClass implements Insertable<ItemRow> {
           other.checked == this.checked &&
           other.checkedBy == this.checkedBy &&
           other.checkedAt == this.checkedAt &&
-          other.fulfilledBy == this.fulfilledBy &&
           other.deleted == this.deleted);
 }
 
@@ -1327,7 +1284,6 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
   final Value<bool> checked;
   final Value<String?> checkedBy;
   final Value<DateTime?> checkedAt;
-  final Value<String?> fulfilledBy;
   final Value<bool> deleted;
   final Value<int> rowid;
   const ItemsCompanion({
@@ -1342,7 +1298,6 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
     this.checked = const Value.absent(),
     this.checkedBy = const Value.absent(),
     this.checkedAt = const Value.absent(),
-    this.fulfilledBy = const Value.absent(),
     this.deleted = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1358,7 +1313,6 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
     this.checked = const Value.absent(),
     this.checkedBy = const Value.absent(),
     this.checkedAt = const Value.absent(),
-    this.fulfilledBy = const Value.absent(),
     this.deleted = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -1378,7 +1332,6 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
     Expression<bool>? checked,
     Expression<String>? checkedBy,
     Expression<DateTime>? checkedAt,
-    Expression<String>? fulfilledBy,
     Expression<bool>? deleted,
     Expression<int>? rowid,
   }) {
@@ -1394,7 +1347,6 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
       if (checked != null) 'checked': checked,
       if (checkedBy != null) 'checked_by': checkedBy,
       if (checkedAt != null) 'checked_at': checkedAt,
-      if (fulfilledBy != null) 'fulfilled_by': fulfilledBy,
       if (deleted != null) 'deleted': deleted,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1412,7 +1364,6 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
     Value<bool>? checked,
     Value<String?>? checkedBy,
     Value<DateTime?>? checkedAt,
-    Value<String?>? fulfilledBy,
     Value<bool>? deleted,
     Value<int>? rowid,
   }) {
@@ -1428,7 +1379,6 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
       checked: checked ?? this.checked,
       checkedBy: checkedBy ?? this.checkedBy,
       checkedAt: checkedAt ?? this.checkedAt,
-      fulfilledBy: fulfilledBy ?? this.fulfilledBy,
       deleted: deleted ?? this.deleted,
       rowid: rowid ?? this.rowid,
     );
@@ -1470,9 +1420,6 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
     if (checkedAt.present) {
       map['checked_at'] = Variable<DateTime>(checkedAt.value);
     }
-    if (fulfilledBy.present) {
-      map['fulfilled_by'] = Variable<String>(fulfilledBy.value);
-    }
     if (deleted.present) {
       map['deleted'] = Variable<bool>(deleted.value);
     }
@@ -1496,7 +1443,6 @@ class ItemsCompanion extends UpdateCompanion<ItemRow> {
           ..write('checked: $checked, ')
           ..write('checkedBy: $checkedBy, ')
           ..write('checkedAt: $checkedAt, ')
-          ..write('fulfilledBy: $fulfilledBy, ')
           ..write('deleted: $deleted, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -2906,7 +2852,6 @@ typedef $$ItemsTableCreateCompanionBuilder = ItemsCompanion Function({
   Value<bool> checked,
   Value<String?> checkedBy,
   Value<DateTime?> checkedAt,
-  Value<String?> fulfilledBy,
   Value<bool> deleted,
   Value<int> rowid,
 });
@@ -2922,7 +2867,6 @@ typedef $$ItemsTableUpdateCompanionBuilder = ItemsCompanion Function({
   Value<bool> checked,
   Value<String?> checkedBy,
   Value<DateTime?> checkedAt,
-  Value<String?> fulfilledBy,
   Value<bool> deleted,
   Value<int> rowid,
 });
@@ -2987,11 +2931,6 @@ class $$ItemsTableFilterComposer extends Composer<_$AppDb, $ItemsTable> {
 
   ColumnFilters<DateTime> get checkedAt => $composableBuilder(
     column: $table.checkedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get fulfilledBy => $composableBuilder(
-    column: $table.fulfilledBy,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3064,11 +3003,6 @@ class $$ItemsTableOrderingComposer extends Composer<_$AppDb, $ItemsTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get fulfilledBy => $composableBuilder(
-    column: $table.fulfilledBy,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<bool> get deleted => $composableBuilder(
     column: $table.deleted,
     builder: (column) => ColumnOrderings(column),
@@ -3120,11 +3054,6 @@ class $$ItemsTableAnnotationComposer extends Composer<_$AppDb, $ItemsTable> {
   GeneratedColumn<DateTime> get checkedAt =>
       $composableBuilder(column: $table.checkedAt, builder: (column) => column);
 
-  GeneratedColumn<String> get fulfilledBy => $composableBuilder(
-    column: $table.fulfilledBy,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<bool> get deleted =>
       $composableBuilder(column: $table.deleted, builder: (column) => column);
 }
@@ -3168,7 +3097,6 @@ class $$ItemsTableTableManager
                 Value<bool> checked = const Value.absent(),
                 Value<String?> checkedBy = const Value.absent(),
                 Value<DateTime?> checkedAt = const Value.absent(),
-                Value<String?> fulfilledBy = const Value.absent(),
                 Value<bool> deleted = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ItemsCompanion(
@@ -3183,7 +3111,6 @@ class $$ItemsTableTableManager
                 checked: checked,
                 checkedBy: checkedBy,
                 checkedAt: checkedAt,
-                fulfilledBy: fulfilledBy,
                 deleted: deleted,
                 rowid: rowid,
               ),
@@ -3200,7 +3127,6 @@ class $$ItemsTableTableManager
                 Value<bool> checked = const Value.absent(),
                 Value<String?> checkedBy = const Value.absent(),
                 Value<DateTime?> checkedAt = const Value.absent(),
-                Value<String?> fulfilledBy = const Value.absent(),
                 Value<bool> deleted = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ItemsCompanion.insert(
@@ -3215,7 +3141,6 @@ class $$ItemsTableTableManager
                 checked: checked,
                 checkedBy: checkedBy,
                 checkedAt: checkedAt,
-                fulfilledBy: fulfilledBy,
                 deleted: deleted,
                 rowid: rowid,
               ),

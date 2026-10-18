@@ -22,7 +22,7 @@ OpBody bodyFromJson(String type, Map<String, Object?> p) => switch (type) {
           unit: p['unit'] as String?,
           note: p['note'] as String?,
         ),
-      'item.check' => ItemCheck(fulfilledBy: p['fulfilled_by'] as String),
+      'item.check' => const ItemCheck(),
       'item.uncheck' => const ItemUncheck(),
       'item.delete' => const ItemDelete(),
       _ => throw FormatException('unknown op type: $type'),
