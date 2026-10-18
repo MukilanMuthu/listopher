@@ -144,4 +144,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotDeleteAccount => 'Could not delete the account';
+
+  @override
+  String get invite => 'Invite';
+
+  @override
+  String get inviteLink => 'Invite link';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get couldNotInvite => 'Could not make an invite link';
+
+  @override
+  String get joinWithLink => 'Join with a link';
+
+  @override
+  String get join => 'Join';
+
+  @override
+  String get badLink => 'Not a valid invite link';
+
+  @override
+  String get badInvite => 'This invite no longer works';
+
+  @override
+  String get couldNotJoin => 'Could not join the space';
 }

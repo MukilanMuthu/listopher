@@ -345,6 +345,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not delete the account'**
   String get couldNotDeleteAccount;
+
+  /// No description provided for @invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get invite;
+
+  /// No description provided for @inviteLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite link'**
+  String get inviteLink;
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// No description provided for @couldNotInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not make an invite link'**
+  String get couldNotInvite;
+
+  /// No description provided for @joinWithLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Join with a link'**
+  String get joinWithLink;
+
+  /// No description provided for @join.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get join;
+
+  /// No description provided for @badLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a valid invite link'**
+  String get badLink;
+
+  /// No description provided for @badInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'This invite no longer works'**
+  String get badInvite;
+
+  /// No description provided for @couldNotJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not join the space'**
+  String get couldNotJoin;
 }
 
 class _AppLocalizationsDelegate

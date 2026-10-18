@@ -5,8 +5,10 @@ import 'package:listopher/l10n/app_localizations.dart';
 import 'package:listopher/store/store.dart';
 
 import 'delete_space_button.dart';
+import 'invite_button.dart';
 import 'login_screen.dart';
 import 'server_tile.dart';
+import 'start_join.dart';
 import 'start_share_space.dart';
 import 'space_label.dart';
 
@@ -42,12 +44,23 @@ class SpacesTab extends StatelessWidget {
                 builder: (_) => LoginScreen(db: db, client: client),
               )),
             ),
+            ListTile(
+              leading: const Icon(Icons.link),
+              title: Text(t.joinWithLink),
+              onTap: () => startJoin(context, db, client),
+            ),
             for (final space in snap.data ?? <SpaceRow>[])
-              // ponytail: tap does nothing yet. space details / members / QR invite come with the join module.
+              // ponytail: tap does nothing yet. space details / members come later.
               ListTile(
                 leading: Icon(space.private ? Icons.lock : Icons.group),
                 title: Text(spaceLabel(space, t)),
-                trailing: DeleteSpaceButton(db: db, client: client, space: space),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InviteButton(db: db, client: client, space: space),
+                    DeleteSpaceButton(db: db, client: client, space: space),
+                  ],
+                ),
               ),
           ],
         ),

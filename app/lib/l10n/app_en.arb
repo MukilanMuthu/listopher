@@ -46,5 +46,14 @@
   "@handedOver": {"placeholders": {"spaces": {"type": "String"}}},
   "willBeDeleted": "Deleted: {spaces}",
   "@willBeDeleted": {"placeholders": {"spaces": {"type": "String"}}},
-  "couldNotDeleteAccount": "Could not delete the account"
+  "couldNotDeleteAccount": "Could not delete the account",
+  "invite": "Invite",
+  "inviteLink": "Invite link",
+  "copy": "Copy",
+  "couldNotInvite": "Could not make an invite link",
+  "joinWithLink": "Join with a link",
+  "join": "Join",
+  "badLink": "Not a valid invite link",
+  "badInvite": "This invite no longer works",
+  "couldNotJoin": "Could not join the space"
 }

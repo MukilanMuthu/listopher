@@ -4,10 +4,10 @@
 
 **Blocked by:** 04 (Sync)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Owner can create or rotate the invite link from the space
-- [ ] Joiner pastes the link; login prompt appears if not signed in to that server
-- [ ] Join succeeds with a valid invite; wrong or rotated invite shows an error
-- [ ] After joining, the space and its items appear
-- [ ] Test against in-process server: owner + joiner, two phone stores
+- [x] Owner can create or rotate the invite link from the space
+- [x] Joiner pastes the link; login prompt appears if not signed in to that server
+- [x] Join succeeds with a valid invite; wrong or rotated invite shows an error
+- [x] After joining, the space and its items appear
+- [x] Test against in-process server: owner + joiner, two phone stores

@@ -10,3 +10,6 @@ export 'src/list_my_spaces.dart';
 export 'src/logout.dart';
 export 'src/delete_preview.dart';
 export 'src/delete_account.dart';
+export 'src/bad_invite.dart';
+export 'src/create_invite.dart';
+export 'src/join_space.dart';

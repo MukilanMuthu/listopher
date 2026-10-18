@@ -7,17 +7,19 @@ import 'package:listopher/store/store.dart';
 import 'package:listopher/sync/sync.dart';
 
 /// log in to a self-hosted server. ok = save account and close.
+/// [initialUrl] fills the address (join links know their server).
 class LoginScreen extends StatefulWidget {
   final AppDb db;
   final http.Client client;
-  const LoginScreen({super.key, required this.db, required this.client});
+  final String? initialUrl;
+  const LoginScreen({super.key, required this.db, required this.client, this.initialUrl});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _url = TextEditingController();
+  late final _url = TextEditingController(text: widget.initialUrl);
   final _user = TextEditingController();
   final _password = TextEditingController();
   LoginFailure? _error; // last failure, shown under the fields
