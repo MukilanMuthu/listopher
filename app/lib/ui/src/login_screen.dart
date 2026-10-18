@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:listopher/l10n/app_localizations.dart';
 import 'package:listopher/net/net.dart';
 import 'package:listopher/store/store.dart';
+import 'package:listopher/sync/sync.dart';
 
 /// log in to a self-hosted server. ok = save account and close.
 class LoginScreen extends StatefulWidget {
@@ -47,6 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
           displayName: result.displayName,
           token: result.token,
         );
+        // bring back shared spaces from an earlier install
+        // ponytail: failure is silent; log in again to retry
+        try {
+          await restoreSpaces(widget.db, widget.client, url);
+        } catch (_) {}
         if (mounted) Navigator.of(context).pop();
       case LoginFailed():
         if (mounted) {
