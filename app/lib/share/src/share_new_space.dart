@@ -8,7 +8,8 @@ import 'push_space.dart';
 
 /// make a shared space on [serverUrl]: server first, then the phone, then upload.
 /// false = could not register it (no account there, or server said no / is down):
-/// nothing is created. true = space exists, even if the upload failed (ops wait in outbox).
+/// nothing is created. throws SessionExpired when my token is dead (log in again).
+/// true = space exists, even if the upload failed (ops wait in outbox).
 /// failed upload is retried by the next sync.
 Future<bool> shareNewSpace(
   AppDb db,
@@ -22,6 +23,8 @@ Future<bool> shareNewSpace(
   final spaceId = newId();
   try {
     await createSpace(client, serverUrl, account.token, spaceId);
+  } on SessionExpired {
+    rethrow; // caller tells the user to log in again
   } catch (_) {
     return false; // server down or refused: leave no half space on the phone
   }

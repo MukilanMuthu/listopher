@@ -190,4 +190,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanQr => 'Scan QR';
+
+  @override
+  String get sessionExpired => 'Session expired, log in again';
+
+  @override
+  String unsentWillBeLost(int count) {
+    return '$count unsent changes will be lost';
+  }
+
+  @override
+  String get couldNotRestore => 'Could not restore your spaces';
+
+  @override
+  String get scannerUnavailable =>
+      'Scanner unavailable — paste the link instead';
 }

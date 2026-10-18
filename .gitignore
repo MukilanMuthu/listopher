@@ -4,3 +4,4 @@ build/
 
 # windows desktop build: local dev only, not shipped
 app/windows/
+.claude/worktrees/

@@ -5,6 +5,7 @@ import 'package:listopher/l10n/app_localizations.dart';
 import 'package:listopher/store/store.dart';
 import 'package:listopher/sync/sync.dart';
 
+import 'error_text.dart';
 import 'items_tab.dart';
 import 'spaces_tab.dart';
 
@@ -30,10 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _sync() async {
     try {
       await sync(widget.db, widget.client);
-    } catch (_) {
+    } catch (e) {
       if (!mounted) return;
+      final t = AppLocalizations.of(context);
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).syncFailed)));
+          .showSnackBar(SnackBar(content: Text(errorText(t, e, t.syncFailed))));
     }
   }
 

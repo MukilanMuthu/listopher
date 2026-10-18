@@ -62,5 +62,10 @@
   "boughtBy": "bought by {name}",
   "@boughtBy": {"placeholders": {"name": {"type": "String"}}},
   "whoBought": "Who bought it?",
-  "scanQr": "Scan QR"
+  "scanQr": "Scan QR",
+  "sessionExpired": "Session expired, log in again",
+  "unsentWillBeLost": "{count} unsent changes will be lost",
+  "@unsentWillBeLost": {"placeholders": {"count": {"type": "int"}}},
+  "couldNotRestore": "Could not restore your spaces",
+  "scannerUnavailable": "Scanner unavailable — paste the link instead"
 }

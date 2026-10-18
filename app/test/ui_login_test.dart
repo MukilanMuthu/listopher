@@ -100,6 +100,26 @@ void main() {
     await unmount(tester);
   });
 
+  testWidgets('login ok but restore fails: snackbar says so, account is kept', (tester) async {
+    final noRestore = MockClient((req) async {
+      if (req.url.path == '/me/spaces') return http.Response('', 500);
+      final res = await client.send(http.Request(req.method, req.url)
+        ..body = req.body
+        ..headers.addAll(req.headers));
+      return http.Response.fromStream(res);
+    });
+    await tester.pumpWidget(ListopherApp(db: db, client: noRestore));
+    await settle(tester);
+    await tester.tap(find.text('Spaces'));
+    await settle(tester);
+
+    await logIn(tester, 'alice', 'pw');
+
+    expect(find.text('Could not restore your spaces'), findsOneWidget);
+    expect(find.text('Signed in to http://srv'), findsOneWidget);
+    await unmount(tester);
+  });
+
   testWidgets('dead server shows network error', (tester) async {
     final down = MockClient((_) async => throw http.ClientException('down'));
     await tester.pumpWidget(ListopherApp(db: db, client: down));

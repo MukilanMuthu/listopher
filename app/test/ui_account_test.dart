@@ -8,6 +8,7 @@ import 'package:listopher/net/net.dart';
 import 'package:listopher/share/share.dart';
 import 'package:listopher/store/store.dart';
 import 'package:listopher/ui/ui.dart';
+import 'package:listopher_core/core.dart';
 import 'package:listopher_server/server.dart';
 import 'package:shelf/shelf.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -102,10 +103,59 @@ void main() {
     await unmount(tester);
   });
 
-  testWidgets('server refuses logout: message shown, account stays', (tester) async {
+  testWidgets('dead token on logout: counts as logged out, phone forgets the server', (tester) async {
     await openSpacesTab(tester);
     await tester.runAsync(() => saveServerAccount(db,
         url: 'http://srv', accountId: accountId, displayName: 'Alice', token: 'stale'));
+    await settle(tester);
+
+    await tester.tap(find.byTooltip('Log out'));
+    await settle(tester);
+
+    expect(find.text('Signed in to http://srv'), findsNothing);
+    await unmount(tester);
+  });
+
+  testWidgets('unsent ops: log out asks first; cancel keeps, confirm forgets', (tester) async {
+    await tester.runAsync(() => shareNewSpace(db, client, 'http://srv', 'Home'));
+    final id = (await tester.runAsync(() => watchSpaces(db).first))!.firstWhere((s) => !s.private).id;
+    await tester.runAsync(() => record(db,
+        spaceId: id,
+        itemId: 'i1',
+        body: ItemAdd(name: 'milk', quantity: null, unit: null, note: null, requestedBy: accountId)));
+    // ops cannot go up, logout itself works
+    final offline = MockClient((req) async {
+      if (req.url.path.endsWith('/ops')) throw http.ClientException('down');
+      final r = await client.send(http.Request(req.method, req.url)
+        ..body = req.body
+        ..headers.addAll(req.headers));
+      return http.Response.fromStream(r);
+    });
+    await tester.pumpWidget(ListopherApp(db: db, client: offline));
+    await settle(tester);
+    await tester.tap(find.text('Spaces'));
+    await settle(tester);
+
+    await tester.tap(find.byTooltip('Log out'));
+    await settle(tester);
+    expect(find.text('1 unsent changes will be lost'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await settle(tester);
+    expect(find.text('Signed in to http://srv'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Log out'));
+    await settle(tester);
+    await tester.tap(find.widgetWithText(FilledButton, 'Log out'));
+    await settle(tester);
+    expect(find.text('Signed in to http://srv'), findsNothing);
+    await unmount(tester);
+  });
+
+  testWidgets('server refuses logout: message shown, account stays', (tester) async {
+    final broken = MockClient((req) async => http.Response('', 500));
+    await tester.pumpWidget(ListopherApp(db: db, client: broken));
+    await settle(tester);
+    await tester.tap(find.text('Spaces'));
     await settle(tester);
 
     await tester.tap(find.byTooltip('Log out'));

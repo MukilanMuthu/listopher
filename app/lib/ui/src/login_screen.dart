@@ -6,6 +6,8 @@ import 'package:listopher/net/net.dart';
 import 'package:listopher/store/store.dart';
 import 'package:listopher/sync/sync.dart';
 
+import 'error_text.dart';
+
 /// log in to a self-hosted server. ok = save account and close.
 /// [initialUrl] fills the address (join links know their server).
 class LoginScreen extends StatefulWidget {
@@ -35,6 +37,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   /// ask server. ok = save + close. fail = show why.
   Future<void> _submit() async {
+    final t = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context); // outlives this screen
     setState(() {
       _busy = true;
       _error = null;
@@ -51,10 +55,13 @@ class _LoginScreenState extends State<LoginScreen> {
           token: result.token,
         );
         // bring back shared spaces from an earlier install
-        // ponytail: failure is silent; log in again to retry
         try {
           await restoreSpaces(widget.db, widget.client, url);
-        } catch (_) {}
+        } catch (e) {
+          // logged in but restore failed: say so, log in again to retry
+          messenger.showSnackBar(
+              SnackBar(content: Text(errorText(t, e, t.couldNotRestore))));
+        }
         if (mounted) Navigator.of(context).pop();
       case LoginFailed():
         if (mounted) {

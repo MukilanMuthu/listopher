@@ -429,6 +429,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan QR'**
   String get scanQr;
+
+  /// No description provided for @sessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Session expired, log in again'**
+  String get sessionExpired;
+
+  /// No description provided for @unsentWillBeLost.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} unsent changes will be lost'**
+  String unsentWillBeLost(int count);
+
+  /// No description provided for @couldNotRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not restore your spaces'**
+  String get couldNotRestore;
+
+  /// No description provided for @scannerUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanner unavailable — paste the link instead'**
+  String get scannerUnavailable;
 }
 
 class _AppLocalizationsDelegate

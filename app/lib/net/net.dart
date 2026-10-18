@@ -14,3 +14,4 @@ export 'src/bad_invite.dart';
 export 'src/create_invite.dart';
 export 'src/join_space.dart';
 export 'src/list_members.dart';
+export 'src/session_expired.dart';

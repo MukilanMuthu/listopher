@@ -74,6 +74,15 @@ void main() {
     expect(await outbox(db, (await shared()).id), hasLength(1));
   });
 
+  test('dead token: share throws SessionExpired, nothing is created', () async {
+    final token = (await watchServerAccounts(db).first).single.token;
+    await logout(client, 'http://srv', token); // session revoked
+
+    await expectLater(shareNewSpace(db, client, 'http://srv', 'Home'),
+        throwsA(isA<SessionExpired>()));
+    expect((await watchSpaces(db).first).where((s) => !s.private), isEmpty);
+  });
+
   test('no account on that server fails', () async {
     expect(await shareNewSpace(db, client, 'http://other', 'Home'), false);
   });

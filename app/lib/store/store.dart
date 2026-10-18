@@ -22,3 +22,4 @@ export 'src/member_name.dart';
 export 'src/save_members.dart';
 export 'src/watch_members.dart';
 export 'src/user_id_in.dart';
+export 'src/unsent_count.dart';

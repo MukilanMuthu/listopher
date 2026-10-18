@@ -5,12 +5,13 @@ import 'package:listopher/l10n/app_localizations.dart';
 import 'package:listopher/share/share.dart';
 import 'package:listopher/store/store.dart';
 
+import 'error_text.dart';
 import 'login_screen.dart';
 import 'show_server_picker.dart';
 import 'show_space_dialog.dart';
 
 /// the + button: pick server (log in first if none), ask name, share the space.
-/// any cancel stops quietly. server refusing shows a message.
+/// any cancel stops quietly. server refusing shows a message; dead token says log in again.
 Future<void> startShareSpace(BuildContext context, AppDb db, http.Client client) async {
   final t = AppLocalizations.of(context);
   final messenger = ScaffoldMessenger.of(context);
@@ -31,7 +32,12 @@ Future<void> startShareSpace(BuildContext context, AppDb db, http.Client client)
   if (server == null || !context.mounted) return;
   final name = await showSpaceDialog(context);
   if (name == null) return;
-  if (!await shareNewSpace(db, client, server.url, name)) {
-    messenger.showSnackBar(SnackBar(content: Text(t.couldNotShare)));
+  try {
+    if (!await shareNewSpace(db, client, server.url, name)) {
+      messenger.showSnackBar(SnackBar(content: Text(t.couldNotShare)));
+    }
+  } catch (e) {
+    // dead token: tell the user to log in again
+    messenger.showSnackBar(SnackBar(content: Text(errorText(t, e, t.couldNotShare))));
   }
 }
