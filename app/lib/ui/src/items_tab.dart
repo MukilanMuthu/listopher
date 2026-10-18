@@ -42,7 +42,7 @@ class _ItemsTabState extends State<ItemsTab> {
           quantity: result.quantity,
           unit: result.unit,
           note: null,
-          requestedBy: widget.me.id,
+          requestedBy: await userIdIn(widget.db, space, widget.me),
         ),
       );
     }
@@ -55,10 +55,13 @@ class _ItemsTabState extends State<ItemsTab> {
       // spaces stream gives names, items stream gives rows
       body: StreamBuilder<List<SpaceRow>>(
         stream: watchSpaces(widget.db),
-        builder: (context, spaceSnap) => StreamBuilder<List<ItemRow>>(
+        builder: (context, spaceSnap) => StreamBuilder<Map<String, Map<String, String>>>(
+          stream: watchMembers(widget.db),
+          builder: (context, memberSnap) => StreamBuilder<List<ItemRow>>(
           stream: watchItems(widget.db),
           builder: (context, itemSnap) {
             final items = itemSnap.data ?? [];
+            final spaces = {for (final s in spaceSnap.data ?? <SpaceRow>[]) s.id: s};
             if (items.isEmpty) return Center(child: Text(t.noItemsYet));
             // space id → label
             final labels = {
@@ -66,16 +69,20 @@ class _ItemsTabState extends State<ItemsTab> {
             };
             return ListView(
               children: [
-                for (final item in items)
+                // item of a space not loaded yet: skip it for now
+                for (final item in items.where((i) => spaces.containsKey(i.spaceId)))
                   ItemTile(
                     db: widget.db,
                     me: widget.me,
                     item: item,
+                    space: spaces[item.spaceId]!,
+                    members: memberSnap.data?[item.spaceId] ?? const {},
                     spaceLabel: labels[item.spaceId] ?? '',
                   ),
               ],
             );
           },
+        ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

@@ -1,5 +1,5 @@
 // module interface. callers import only this file.
-export 'src/app_db.dart' show AppDb, SpaceRow, ItemRow, UserRow, ServerAccountRow;
+export 'src/app_db.dart' show AppDb, SpaceRow, ItemRow, UserRow, ServerAccountRow, MemberRow;
 export 'src/create_me.dart';
 export 'src/open_app_db.dart';
 export 'src/record.dart';
@@ -18,3 +18,7 @@ export 'src/rebuild_space.dart';
 export 'src/forget_space.dart';
 export 'src/add_bare_space.dart';
 export 'src/forget_server.dart';
+export 'src/member_name.dart';
+export 'src/save_members.dart';
+export 'src/watch_members.dart';
+export 'src/user_id_in.dart';

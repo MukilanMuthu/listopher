@@ -171,4 +171,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotJoin => 'Could not join the space';
+
+  @override
+  String get deletedUser => 'deleted user';
+
+  @override
+  String askedBy(String name) {
+    return 'asked by $name';
+  }
+
+  @override
+  String boughtBy(String name) {
+    return 'bought by $name';
+  }
+
+  @override
+  String get whoBought => 'Who bought it?';
 }

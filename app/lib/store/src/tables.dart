@@ -71,3 +71,14 @@ class ServerAccounts extends Table {
   @override
   Set<Column> get primaryKey => {url};
 }
+
+/// who is in a shared space, as the server last told us. names work offline.
+@DataClassName('MemberRow')
+class Members extends Table {
+  TextColumn get spaceId => text()();
+  TextColumn get userId => text()();
+  TextColumn get displayName => text()();
+
+  @override
+  Set<Column> get primaryKey => {spaceId, userId};
+}

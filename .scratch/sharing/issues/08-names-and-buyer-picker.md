@@ -4,9 +4,9 @@
 
 **Blocked by:** 06 (Join by invite link)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Item rows show requester and fulfiller names
-- [ ] Member names come from the server's member list and are refreshed on sync
-- [ ] Ops by deleted accounts show a localized 'deleted user'
-- [ ] Checking an item in a shared space lets the user pick the buyer; default is me
+- [x] Item rows show requester and fulfiller names
+- [x] Member names come from the server's member list and are refreshed on sync
+- [x] Ops by deleted accounts show a localized 'deleted user'
+- [x] Checking an item in a shared space lets the user pick the buyer; default is me

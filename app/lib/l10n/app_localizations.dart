@@ -399,6 +399,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not join the space'**
   String get couldNotJoin;
+
+  /// No description provided for @deletedUser.
+  ///
+  /// In en, this message translates to:
+  /// **'deleted user'**
+  String get deletedUser;
+
+  /// No description provided for @askedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'asked by {name}'**
+  String askedBy(String name);
+
+  /// No description provided for @boughtBy.
+  ///
+  /// In en, this message translates to:
+  /// **'bought by {name}'**
+  String boughtBy(String name);
+
+  /// No description provided for @whoBought.
+  ///
+  /// In en, this message translates to:
+  /// **'Who bought it?'**
+  String get whoBought;
 }
 
 class _AppLocalizationsDelegate

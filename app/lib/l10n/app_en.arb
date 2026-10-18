@@ -55,5 +55,11 @@
   "join": "Join",
   "badLink": "Not a valid invite link",
   "badInvite": "This invite no longer works",
-  "couldNotJoin": "Could not join the space"
+  "couldNotJoin": "Could not join the space",
+  "deletedUser": "deleted user",
+  "askedBy": "asked by {name}",
+  "@askedBy": {"placeholders": {"name": {"type": "String"}}},
+  "boughtBy": "bought by {name}",
+  "@boughtBy": {"placeholders": {"name": {"type": "String"}}},
+  "whoBought": "Who bought it?"
 }

@@ -4,7 +4,8 @@ import 'package:listopher/net/net.dart';
 import 'package:listopher/share/share.dart';
 import 'package:listopher/store/store.dart';
 
-/// sync one shared space: send outbox, pull new ops (all pages), rebuild state.
+/// sync one shared space: send outbox, pull new ops (all pages), refresh member
+/// names, rebuild state.
 /// server says the space is gone (deleted by the owner): forget it here, no throw.
 /// throws if the server cannot be reached or says no.
 Future<void> syncSpace(AppDb db, http.Client client, SpaceRow space) async {
@@ -19,6 +20,8 @@ Future<void> syncSpace(AppDb db, http.Client client, SpaceRow space) async {
       if (page.isEmpty) break;
       await storeOps(db, page);
     }
+    // names for blame and the buyer picker; kept locally so they work offline
+    await saveMembers(db, space.id, await listMembers(client, url, account.token, space.id));
   } on SpaceGone {
     await forgetSpace(db, space.id); // unsent ops die with the space
     return;
