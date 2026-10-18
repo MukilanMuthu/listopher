@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:listopher/autosync/autosync.dart';
+import 'package:listopher/bgsync/bgsync.dart';
 import 'package:listopher/l10n/app_localizations.dart';
 import 'package:listopher/store/store.dart';
 
@@ -27,13 +28,21 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     // open, resume, poll and local changes all sync from here on
-    _auto = startAutoSync(widget.db, widget.client, onError: _showError);
+    _auto = startAutoSync(widget.db, widget.client, onError: _onSyncError);
   }
 
   @override
   void dispose() {
     _auto.stop();
     super.dispose();
+  }
+
+  /// failed sync: show it and queue one background sync for when the network returns.
+  /// ponytail: autosync reports an error only when its text changes, so the job is
+  /// queued once per new error; the 15 min periodic job covers the rest.
+  void _onSyncError(Object e) {
+    _showError(e);
+    queueSyncOnNetwork().catchError((_) {}); // fire and forget, never throws out
   }
 
   /// snackbar for a failed sync. dead token says "log in again".
