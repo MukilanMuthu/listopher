@@ -1,5 +1,7 @@
 // auto sync: open, resume, poll, debounce, no overlap, error dedupe.
 // two phones, same account, real server handler in-process, real (short) timers.
+import 'dart:async';
+
 import 'package:drift/native.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,6 +32,7 @@ void main() {
   var maxInFlight = 0; // most at once
   var delay = Duration.zero; // added to every request
   var failing = false; // true = server "down"
+  Future<void> Function()? afterPush; // runs once after the server took a push, before the phone hears back
   AutoSync? auto;
 
   // short timers keep the tests fast
@@ -50,6 +53,11 @@ void main() {
         if (failing) throw http.ClientException('down');
         final res = await handler(
             Request(req.method, req.url, body: req.body, headers: req.headers));
+        final hook = afterPush;
+        if (hook != null && req.method == 'POST' && req.url.path.endsWith('/ops')) {
+          afterPush = null;
+          await hook();
+        }
         return http.Response(await res.readAsString(), res.statusCode);
       } finally {
         inFlight--;
@@ -120,6 +128,7 @@ void main() {
     maxInFlight = 0;
     delay = Duration.zero;
     failing = false;
+    afterPush = null;
   });
   tearDown(() async {
     auto?.stop();
@@ -148,6 +157,20 @@ void main() {
     });
     expect(await names(b), ['eggs', 'milk', 'rice', 'tea']);
     expect(pushes, 1);
+  });
+
+  test('a change recorded while a push confirms is sent within the debounce, not the poll', () async {
+    // poll far away: only the debounce can send the late op in time
+    auto = startAutoSync(a, client,
+        onError: (_) {}, poll: const Duration(seconds: 30), debounce: debounce);
+    await wait(300); // opening sync done
+    // the late op lands as the first push is answered, so the outbox count stays 1
+    afterPush = () async => unawaited(addItem(a, 'late'));
+    await addItem(a, 'first');
+    await eventually(() async {
+      await sync(b, client);
+      return (await names(b)).contains('late');
+    });
   });
 
   test('polls while in the foreground', () async {

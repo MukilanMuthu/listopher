@@ -15,7 +15,7 @@ typedef AutoSync = ({Future<void> Function() now, void Function() stop});
 
 /// keep shared spaces in sync without the screens asking. triggers:
 /// app open, app resume, every [poll] in the foreground, and [debounce] after a
-/// local change waits in a shared outbox. one sync at a time (see [oneAtATime]).
+/// local change is recorded in a shared space. one sync at a time (see [oneAtATime]).
 /// a failed automatic sync calls [onError] only when the error differs from the
 /// last one, so a dead server is reported once, not every poll.
 /// ponytail: error identity = its text; a changed message counts as new.
@@ -53,9 +53,14 @@ AutoSync startAutoSync(
 
   // local change: wait for quiet, then sync. restarts on every new change
   Timer? debounceTimer;
-  final unsent = watchUnsentCount(db).listen((count) {
+  // fires only when the newest unsent seq goes UP = a new local op; confirms never raise it
+  int? newest;
+  final unsent = watchNewestUnsentSeq(db).listen((seq) {
+    final isNew = seq != null && (newest == null || seq > newest!);
+    newest = seq;
+    if (!isNew) return;
     debounceTimer?.cancel();
-    if (count > 0) debounceTimer = Timer(debounce, auto); // 0 = outbox empty, nothing to send
+    debounceTimer = Timer(debounce, auto);
   });
 
   // resume = sync now and poll; anything else = quiet
