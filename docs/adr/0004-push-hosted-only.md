@@ -13,7 +13,9 @@ APNs and FCM only accept pushes to our published app when they are signed with o
 - Push is an optional module in the server. It is off by default.
 - There is no push relay for self-hosters. Their clients sync:
   - when the app opens or comes to the foreground,
-  - by polling while the app is in the foreground,
+  - right after any local change to a shared space (add, check, edit, delete, create, join), debounced,
+  - by polling every 30 s while the app is in the foreground,
+  - in the background on Android via WorkManager (periodic, 15 min minimum),
   - when the user taps the **Sync** button on the ongoing notification or the widget.
 - The Sync button calls one sync action:
   - Android: the widget and notification buttons run Dart sync in the background.

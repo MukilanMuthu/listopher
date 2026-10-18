@@ -5,7 +5,7 @@ Status: Accepted
 
 ## Context
 
-Each item must record who asked for it (**requester**), who ticked it off (**checker**) and who bought it (**fulfiller**). These can be different people. For example, Asha ticks an item that Ravi bought.
+Each item must record who asked for it (**requester**) and who bought it (**checker**: whoever ticks it off is the buyer). (Revised 2026-10-18: a separate fulfiller with a buyer picker was dropped. The person who checks the item bought it.)
 
 There are no separate lists. Items live in **spaces**: every user has one **private** space, plus any number of **shared** spaces. All members of a shared space see the same items. (Revised 2026-10-10: this replaced lists and groups.)
 
@@ -21,7 +21,6 @@ member    space_id, user_id, role (owner|member), joined_at
 item      id, space_id, name, quantity?, unit?, note?,   -- "rice 1 kg", "soap 1", "milk"
           requested_by, requested_at,
           checked, checked_by?, checked_at?,
-          fulfilled_by?,                         -- who bought it; defaults to checked_by
           deleted
 op        id, space_id, item_id?, user_id,
           type, payload (json), client_time,
@@ -36,8 +35,8 @@ op        id, space_id, item_id?, user_id,
 | `space.rename` | `{name}` |
 | `item.add` | `{name, quantity?, unit?, note?, requested_by}` |
 | `item.update` | `{name, quantity?, unit?, note?}` (full state: null = cleared) |
-| `item.check` | `{fulfilled_by}` (defaults to the acting user) |
-| `item.uncheck` | `{}` (clears `checked_by`, `checked_at` and `fulfilled_by`) |
+| `item.check` | `{}` (checker = the op's user = buyer) |
+| `item.uncheck` | `{}` (clears `checked_by` and `checked_at`) |
 | `item.delete` | `{}` |
 
 - `quantity` is a decimal (`1.5` kg). `unit` is free text (`kg`, `L`, `pack`). Both are optional: "soap 1" has no unit, and "milk" has neither.

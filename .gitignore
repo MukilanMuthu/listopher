@@ -5,3 +5,7 @@ build/
 # windows desktop build: local dev only, not shipped
 app/windows/
 .claude/worktrees/
+
+# local server database
+server/*.db
+server/*.db-*
