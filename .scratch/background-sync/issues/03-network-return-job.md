@@ -4,13 +4,15 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [x] Foreground auto-sync failure queues the unique one-off task (keep if it's already queued)
 - [x] The background dispatcher handles the one-off task name the same as the periodic one
 - [x] Background runs never queue it
-- [ ] Manual check: airplane mode on, add an item, close the app, airplane mode off, and the item reaches the server without opening the app
+- [x] Manual check: airplane mode on, add an item, close the app, airplane mode off, and the item reaches the server without opening the app
 
 ## Comments
 
 Code done (`queueSyncOnNetwork`, wired into home screen `onError`). Phone check pending: airplane mode on, add an item to a shared space, close the app, airplane mode off, check the item reached the other phone/server without opening the app. `adb shell dumpsys jobscheduler | grep listopher` shows the queued job.
+
+Manual check passed on the phone (2026-10-18): item added offline reached the Windows app after airplane mode off, app closed.
