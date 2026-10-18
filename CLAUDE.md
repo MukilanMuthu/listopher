@@ -21,3 +21,17 @@ Shared shopping list. Local-first Flutter app (Android first) plus a self-hostab
 ## Modules
 
 See [ADR 7](docs/adr/0007-stack-and-module-design.md). Each module has a small interface and its internals stay private. Tests go only through module interfaces.
+
+## Agent skills
+
+### Issue tracker
+
+Local markdown: one file per ticket under `.scratch/<feature>/issues/`. No PR triage. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default vocabulary (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix) as a `Status:` line per ticket. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` + `docs/adr/` at repo root. See `docs/agents/domain.md`.
