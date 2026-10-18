@@ -29,6 +29,19 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     // open, resume, poll and local changes all sync from here on
     _auto = startAutoSync(widget.db, widget.client, onError: _onSyncError);
+    _showBackgroundError();
+  }
+
+  /// background sync left an error? say so once, then clear it (ADR 9).
+  /// ponytail: message has no details; an expired session is still
+  /// reported by the on-open foreground sync.
+  Future<void> _showBackgroundError() async {
+    final state = await readBgSyncState(widget.db);
+    if (state.lastError == null || !mounted) return; // nothing saved, or screen gone
+    final t = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(t.backgroundSyncFailed)));
+    await clearBgSyncError(widget.db);
   }
 
   @override

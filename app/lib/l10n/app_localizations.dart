@@ -280,6 +280,12 @@ abstract class AppLocalizations {
   /// **'Sync failed'**
   String get syncFailed;
 
+  /// Shown once on open when a background sync failed
+  ///
+  /// In en, this message translates to:
+  /// **'Background sync failed'**
+  String get backgroundSyncFailed;
+
   /// No description provided for @deleteSpace.
   ///
   /// In en, this message translates to:

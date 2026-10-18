@@ -105,6 +105,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncFailed => 'Sync failed';
 
   @override
+  String get backgroundSyncFailed => 'Background sync failed';
+
+  @override
   String get deleteSpace => 'Delete space';
 
   @override

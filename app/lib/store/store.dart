@@ -27,3 +27,4 @@ export 'src/watch_newest_unsent_seq.dart';
 export 'src/read_bg_sync_state.dart';
 export 'src/save_bg_sync_failure.dart';
 export 'src/reset_bg_sync_failures.dart';
+export 'src/clear_bg_sync_error.dart';

@@ -4,8 +4,12 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] On open, the saved error is shown once and then cleared
-- [ ] No saved error means nothing is shown
-- [ ] Test: save an error, open the app, see it; open again and it's gone
+- [x] On open, the saved error is shown once and then cleared
+- [x] No saved error means nothing is shown
+- [x] Test: save an error, open the app, see it; open again and it's gone
+
+## Comments
+
+- Deviation: the saved error is only `e.toString()`, so its type is lost and `errorText` cannot tell an expired session. The open shows one fixed message ("Background sync failed") instead. An expired session is still shown as "log in again" by the foreground sync that runs on open.
