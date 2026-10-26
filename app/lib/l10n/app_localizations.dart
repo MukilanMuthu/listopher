@@ -148,6 +148,12 @@ abstract class AppLocalizations {
   /// **'Private'**
   String get privateSpace;
 
+  /// No description provided for @showAllLists.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all lists'**
+  String get showAllLists;
+
   /// No description provided for @noItemsYet.
   ///
   /// In en, this message translates to:

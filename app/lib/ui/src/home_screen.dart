@@ -5,6 +5,7 @@ import 'package:listopher/autosync/autosync.dart';
 import 'package:listopher/bgsync/bgsync.dart';
 import 'package:listopher/l10n/app_localizations.dart';
 import 'package:listopher/store/store.dart';
+import 'package:listopher/widget/widget.dart';
 
 import 'error_text.dart';
 import 'items_tab.dart';
@@ -15,7 +16,18 @@ class HomeScreen extends StatefulWidget {
   final AppDb db;
   final UserRow me;
   final http.Client client;
-  const HomeScreen({super.key, required this.db, required this.me, required this.client});
+  final String? selectedSpaceId;
+  final int widgetLinkRevision;
+  final VoidCallback onClearSelectedSpace;
+  const HomeScreen({
+    super.key,
+    required this.db,
+    required this.me,
+    required this.client,
+    required this.selectedSpaceId,
+    required this.widgetLinkRevision,
+    required this.onClearSelectedSpace,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -28,8 +40,21 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     // open, resume, poll and local changes all sync from here on
-    _auto = startAutoSync(widget.db, widget.client, onError: _onSyncError);
-    _showBackgroundError().catchError((_) {}); // nice-to-have: never leak an error
+    _auto = startAutoSync(
+      widget.db,
+      widget.client,
+      onError: _onSyncError,
+      onSuccess: () async {
+        try {
+          await refreshWidget(widget.db, syncFailed: false);
+        } catch (
+          _
+        ) {} // a widget refresh cannot turn a good sync into a failure
+      },
+    );
+    _showBackgroundError().catchError(
+      (_) {},
+    ); // nice-to-have: never leak an error
   }
 
   /// background sync left an error? say so once, then clear it (ADR 9).
@@ -56,7 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
   /// queued once per new error; the 15 min periodic job covers the rest.
   void _onSyncError(Object e) {
     _showError(e);
-    queueSyncOnNetwork().catchError((_) {}); // fire and forget, never throws out
+    queueSyncOnNetwork().catchError(
+      (_) {},
+    ); // fire and forget, never throws out
   }
 
   /// snackbar for a failed sync. dead token says "log in again".
@@ -80,18 +107,40 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     return DefaultTabController(
+      key: ValueKey(
+        widget.widgetLinkRevision,
+      ), // each widget link returns to the Items tab
       length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: Text(t.appName),
           actions: [
-            IconButton(icon: const Icon(Icons.sync), tooltip: t.sync, onPressed: _sync),
+            if (widget.selectedSpaceId != null)
+              IconButton(
+                icon: const Icon(Icons.filter_alt_off),
+                tooltip: t.showAllLists,
+                onPressed: widget.onClearSelectedSpace,
+              ),
+            IconButton(
+              icon: const Icon(Icons.sync),
+              tooltip: t.sync,
+              onPressed: _sync,
+            ),
           ],
-          bottom: TabBar(tabs: [Tab(text: t.itemsTab), Tab(text: t.spacesTab)]),
+          bottom: TabBar(
+            tabs: [
+              Tab(text: t.itemsTab),
+              Tab(text: t.spacesTab),
+            ],
+          ),
         ),
         body: TabBarView(
           children: [
-            ItemsTab(db: widget.db, me: widget.me),
+            ItemsTab(
+              db: widget.db,
+              me: widget.me,
+              selectedSpaceId: widget.selectedSpaceId,
+            ),
             SpacesTab(db: widget.db, client: widget.client),
           ],
         ),

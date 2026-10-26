@@ -13,7 +13,13 @@ import 'space_label.dart';
 class ItemsTab extends StatefulWidget {
   final AppDb db;
   final UserRow me;
-  const ItemsTab({super.key, required this.db, required this.me});
+  final String? selectedSpaceId;
+  const ItemsTab({
+    super.key,
+    required this.db,
+    required this.me,
+    this.selectedSpaceId,
+  });
 
   @override
   State<ItemsTab> createState() => _ItemsTabState();
@@ -25,12 +31,17 @@ class _ItemsTabState extends State<ItemsTab> {
     final t = AppLocalizations.of(context);
     final spaces = await watchSpaces(widget.db).first;
     if (!mounted) return;
-    final space = spaces.length == 1 ? spaces.single : await showSpacePicker(context, spaces);
+    final space = spaces.length == 1
+        ? spaces.single
+        : await showSpacePicker(context, spaces);
     if (space == null || !mounted) return;
     while (true) {
       // screen gone mid-loop: stop
       if (!mounted) return;
-      final result = await showItemDialog(context, spaceName: spaceLabel(space, t));
+      final result = await showItemDialog(
+        context,
+        spaceName: spaceLabel(space, t),
+      );
       // cancel ends the loop
       if (result == null) break;
       await record(
@@ -55,35 +66,47 @@ class _ItemsTabState extends State<ItemsTab> {
       // spaces stream gives names, items stream gives rows
       body: StreamBuilder<List<SpaceRow>>(
         stream: watchSpaces(widget.db),
-        builder: (context, spaceSnap) => StreamBuilder<Map<String, Map<String, String>>>(
-          stream: watchMembers(widget.db),
-          builder: (context, memberSnap) => StreamBuilder<List<ItemRow>>(
-          stream: watchItems(widget.db),
-          builder: (context, itemSnap) {
-            final items = itemSnap.data ?? [];
-            final spaces = {for (final s in spaceSnap.data ?? <SpaceRow>[]) s.id: s};
-            if (items.isEmpty) return Center(child: Text(t.noItemsYet));
-            // space id → label
-            final labels = {
-              for (final s in spaceSnap.data ?? <SpaceRow>[]) s.id: spaceLabel(s, t),
-            };
-            return ListView(
-              children: [
-                // item of a space not loaded yet: skip it for now
-                for (final item in items.where((i) => spaces.containsKey(i.spaceId)))
-                  ItemTile(
-                    db: widget.db,
-                    me: widget.me,
-                    item: item,
-                    space: spaces[item.spaceId]!,
-                    members: memberSnap.data?[item.spaceId] ?? const {},
-                    spaceLabel: labels[item.spaceId] ?? '',
-                  ),
-              ],
-            );
-          },
-        ),
-        ),
+        builder: (context, spaceSnap) =>
+            StreamBuilder<Map<String, Map<String, String>>>(
+              stream: watchMembers(widget.db),
+              builder: (context, memberSnap) => StreamBuilder<List<ItemRow>>(
+                stream: watchItems(widget.db),
+                builder: (context, itemSnap) {
+                  final items = (itemSnap.data ?? [])
+                      .where(
+                        (item) =>
+                            widget.selectedSpaceId == null ||
+                            item.spaceId == widget.selectedSpaceId,
+                      )
+                      .toList();
+                  final spaces = {
+                    for (final s in spaceSnap.data ?? <SpaceRow>[]) s.id: s,
+                  };
+                  if (items.isEmpty) return Center(child: Text(t.noItemsYet));
+                  // space id → label
+                  final labels = {
+                    for (final s in spaceSnap.data ?? <SpaceRow>[])
+                      s.id: spaceLabel(s, t),
+                  };
+                  return ListView(
+                    children: [
+                      // item of a space not loaded yet: skip it for now
+                      for (final item in items.where(
+                        (i) => spaces.containsKey(i.spaceId),
+                      ))
+                        ItemTile(
+                          db: widget.db,
+                          me: widget.me,
+                          item: item,
+                          space: spaces[item.spaceId]!,
+                          members: memberSnap.data?[item.spaceId] ?? const {},
+                          spaceLabel: labels[item.spaceId] ?? '',
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _add,
