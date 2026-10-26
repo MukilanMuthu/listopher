@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:listopher/store/store.dart';
 import 'package:listopher/sync/sync.dart';
+import 'package:listopher/widget/widget.dart';
 
 import 'backoff_wait.dart';
 
@@ -19,9 +20,13 @@ Future<void> backgroundSync(AppDb db, http.Client client, DateTime now) async {
       return;
     }
     await sync(db, client); // good sync resets the failures itself
+    await refreshWidget(db, syncFailed: false).catchError((_) {});
   } catch (e) {
     try {
       await saveBgSyncFailure(db, now, e.toString());
     } catch (_) {} // nothing more to do
+    try {
+      await refreshWidget(db, syncFailed: true);
+    } catch (_) {} // widget updates are optional
   }
 }

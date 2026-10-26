@@ -23,15 +23,18 @@ AutoSync startAutoSync(
   AppDb db,
   http.Client client, {
   required void Function(Object error) onError,
+  Future<void> Function()? onSuccess,
   Duration poll = const Duration(seconds: 30),
   Duration debounce = const Duration(seconds: 1),
 }) {
   var stopped = false;
-  String? lastError; // text of the error already shown, null = last run was fine
+  String?
+  lastError; // text of the error already shown, null = last run was fine
   // any good sync (manual too) forgets the shown error, so it can show again later
   final now = oneAtATime(() async {
     await sync(db, client);
     lastError = null;
+    await onSuccess?.call();
   });
 
   // automatic trigger: sync, report a new error once
@@ -64,18 +67,20 @@ AutoSync startAutoSync(
   });
 
   // resume = sync now and poll; anything else = quiet
-  final lifecycle = AppLifecycleListener(onStateChange: (state) {
-    if (state == AppLifecycleState.resumed) {
-      // the background job wrote through its own connection: streams never saw it
-      // ponytail: a background write while the app is in the foreground shows only
-      // after the next resume or local change.
-      db.markTablesUpdated(db.allTables);
-      auto();
-      startPolling();
-    } else {
-      pollTimer?.cancel();
-    }
-  });
+  final lifecycle = AppLifecycleListener(
+    onStateChange: (state) {
+      if (state == AppLifecycleState.resumed) {
+        // the background job wrote through its own connection: streams never saw it
+        // ponytail: a background write while the app is in the foreground shows only
+        // after the next resume or local change.
+        db.markTablesUpdated(db.allTables);
+        auto();
+        startPolling();
+      } else {
+        pollTimer?.cancel();
+      }
+    },
+  );
 
   auto(); // app open
   startPolling();

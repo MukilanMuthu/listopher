@@ -37,6 +37,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privateSpace => 'Private';
 
   @override
+  String get showAllLists => 'Show all lists';
+
+  @override
   String get noItemsYet => 'No items yet';
 
   @override
